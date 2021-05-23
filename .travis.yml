@@ -14,6 +14,9 @@ cache:
 
 script: "./gradlew clean build"
 
+before_install:
+  - chmod +x gradlew
+
 # 메일 알람
 notifications:
   email:
