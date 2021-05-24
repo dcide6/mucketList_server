@@ -37,6 +37,20 @@ deploy:
       repo: dcide6/mucketList_server
       branch: master
 
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: mucketlist-server-deploy
+    key: mucketList_server.zip
+    bundle_type: zip
+    application: mucketList_server
+    deployment_group: mucketList_server_group
+    region: ap-northeast-2
+    wait-until-deployed: true
+    on:
+      repo: dcide6/mucketList_server
+      branch: master
+
 # 메일 알람
 notifications:
   email:
