@@ -1,13 +1,13 @@
-package com.siksaurus.mucketlist_server;
+package com.siksaurus.yamstack;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MucketListServerApplication {
+public class YamStackServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MucketListServerApplication.class, args);
+        SpringApplication.run(YamStackServerApplication.class, args);
     }
 
 }
