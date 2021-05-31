@@ -1,11 +1,11 @@
 package com.siksaurus.yamstack.restaurant.domain;
 
+import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -14,7 +14,7 @@ public class Restaurant {
 
     @Id
     @Column(name = "restr_id")
-    private int id;
+    private long id;
 
     private String name;
     private String addName;
@@ -27,4 +27,6 @@ public class Restaurant {
     private String category1depth;
     private String category2depth;
 
+    @OneToMany(mappedBy = "restaurant")
+    private Set<Yam> yams;
 }

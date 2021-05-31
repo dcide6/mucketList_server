@@ -11,6 +11,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 public class Food {
+
     @Id
     @GeneratedValue
     private long id;

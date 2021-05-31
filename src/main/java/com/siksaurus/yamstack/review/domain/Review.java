@@ -1,12 +1,10 @@
 package com.siksaurus.yamstack.review.domain;
 
+import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -19,10 +17,16 @@ public class Review {
     @Column(name = "review_id")
     private long id;
 
+    @OneToOne
+    @JoinColumn(name = "yam_id")
+    private Yam yam;
+
     private LocalDate genTime;
     private LocalDate visitTime;
     private String imagePath;
     private String comment;
     private int likeNum;
     private boolean isShared;
+
+
 }

@@ -1,6 +1,7 @@
 package com.siksaurus.yamstack.yam.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
