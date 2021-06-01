@@ -40,7 +40,6 @@ public class Yam {
 
     private String memo;
     private boolean closed;
-    private String company;
 
     @OneToOne(mappedBy = "yam")
     private Review review;

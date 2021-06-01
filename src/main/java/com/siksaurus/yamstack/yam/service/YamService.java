@@ -22,7 +22,7 @@ public class YamService {
 
     public List<Yam> getYamListByUserId(User user) {
         return yamRepository.findById(user.getId());
-    };
+    }
 
     public void deleteYam(Yam yam) {
         yamRepository.delete(yam);

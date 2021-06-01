@@ -2,6 +2,9 @@ package com.siksaurus.yamstack;
 
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.restaurant.service.RestaurantService;
+import com.siksaurus.yamstack.review.domain.Company;
+import com.siksaurus.yamstack.review.domain.Review;
+import com.siksaurus.yamstack.review.service.ReviewService;
 import com.siksaurus.yamstack.user.domain.User;
 import com.siksaurus.yamstack.user.domain.UserRole;
 import com.siksaurus.yamstack.user.service.UserService;
@@ -27,6 +30,9 @@ class YamStackServerApplicationTests {
 
     @Autowired
     RestaurantService restaurantService;
+
+    @Autowired
+    ReviewService reviewService;
 
     @Test
     void contextLoads() {
@@ -68,8 +74,16 @@ class YamStackServerApplicationTests {
 
         Yam rst_yam = yamService.saveYam(yam);
 
+        Review review = new Review();
+        review.setComment("강추! 다시 생각나는 맛");
+        review.setShared(true);
+        review.setCompany(Company.FRIEND);
+
+        Review rst_review = reviewService.saveReview(review);
+
         User user1 = userService.getUser(rst_user);
         Restaurant restaurant1 = restaurantService.getRestaurantById(rst_restr);
+        Review review1 = reviewService.getReview(rst_review);
     }
 
 }
