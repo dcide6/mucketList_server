@@ -27,6 +27,6 @@ public class Review {
     private String comment;
     private int likeNum;
     private boolean isShared;
-
+    private Company company;
 
 }
