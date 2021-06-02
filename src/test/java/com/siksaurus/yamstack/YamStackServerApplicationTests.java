@@ -43,8 +43,8 @@ class YamStackServerApplicationTests {
         //유저 등록
         User user = new User();
         user.setId("test@gmail.com");
-        user.setPw("test111");
-        user.setRole(UserRole.USER);
+        user.setPassword("test111");
+        user.setRoles(Set.of(UserRole.USER));
         user.setName("한상호");
 
         User rst_user = userService.saveUser(user);
@@ -81,7 +81,7 @@ class YamStackServerApplicationTests {
 
         Review rst_review = reviewService.saveReview(review);
 
-        User user1 = userService.getUser(rst_user);
+        User user1 = userService.getUser(rst_user.getId());
         Restaurant restaurant1 = restaurantService.getRestaurantById(rst_restr);
         Review review1 = reviewService.getReview(rst_review);
     }

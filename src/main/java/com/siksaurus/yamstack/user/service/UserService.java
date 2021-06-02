@@ -17,8 +17,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User getUser(User user) {
-        return userRepository.findById(user.getId()).get();
+    public User getUser(String userId) {
+        return userRepository.findById(userId).get();
     }
 
     public void deleteUser(User user) {
