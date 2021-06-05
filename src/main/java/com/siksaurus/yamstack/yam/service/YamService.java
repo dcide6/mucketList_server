@@ -1,6 +1,6 @@
 package com.siksaurus.yamstack.yam.service;
 
-import com.siksaurus.yamstack.user.domain.User;
+import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
 import org.springframework.stereotype.Service;
@@ -20,8 +20,8 @@ public class YamService {
         return yamRepository.save(yam);
     }
 
-    public List<Yam> getYamListByUserId(User user) {
-        return yamRepository.findById(user.getId());
+    public List<Yam> getYamListByUserId(Account account) {
+        return yamRepository.findById(account.getId());
     }
 
     public void deleteYam(Yam yam) {

@@ -1,18 +1,22 @@
 package com.siksaurus.yamstack.restaurant.domain;
 
 import com.siksaurus.yamstack.yam.domain.Yam;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
 public class Restaurant {
 
     @Id
+    @GeneratedValue
     @Column(name = "restr_id")
     private long id;
 

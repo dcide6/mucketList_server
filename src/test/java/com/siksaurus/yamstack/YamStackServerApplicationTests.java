@@ -5,9 +5,9 @@ import com.siksaurus.yamstack.restaurant.service.RestaurantService;
 import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.review.service.ReviewService;
-import com.siksaurus.yamstack.user.domain.User;
-import com.siksaurus.yamstack.user.domain.UserRole;
-import com.siksaurus.yamstack.user.service.UserService;
+import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.domain.AccountRole;
+import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.yam.domain.Food;
 import com.siksaurus.yamstack.yam.domain.Tag;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -26,7 +26,7 @@ class YamStackServerApplicationTests {
     YamService yamService;
 
     @Autowired
-    UserService userService;
+    AccountService accountService;
 
     @Autowired
     RestaurantService restaurantService;
@@ -41,13 +41,13 @@ class YamStackServerApplicationTests {
     @Test
     void test() {
         //유저 등록
-        User user = new User();
-        user.setId("test@gmail.com");
-        user.setPassword("test111");
-        user.setRoles(Set.of(UserRole.USER));
-        user.setName("한상호");
+        Account account = new Account();
+        account.setId("test@gmail.com");
+        account.setPassword("test111");
+        account.setRole(AccountRole.USER);
+        account.setName("한상호");
 
-        User rst_user = userService.saveUser(user);
+        Account rst_account = accountService.saveAccount(account);
 
         //식당 검색
         Restaurant restaurant = new Restaurant();
@@ -58,7 +58,7 @@ class YamStackServerApplicationTests {
 
         //정보 입력
         Yam yam = new Yam();
-        yam.setUser(user);
+        yam.setAccount(account);
         yam.setRestaurant(restaurant);
 
         Tag tag = new Tag();
@@ -81,7 +81,7 @@ class YamStackServerApplicationTests {
 
         Review rst_review = reviewService.saveReview(review);
 
-        User user1 = userService.getUser(rst_user.getId());
+        Account account1 = accountService.getAccount(rst_account.getId());
         Restaurant restaurant1 = restaurantService.getRestaurantById(rst_restr);
         Review review1 = reviewService.getReview(rst_review);
     }

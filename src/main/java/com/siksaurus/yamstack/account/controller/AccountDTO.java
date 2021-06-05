@@ -1,7 +1,7 @@
-package com.siksaurus.yamstack.user.controller;
+package com.siksaurus.yamstack.account.controller;
 
-import com.siksaurus.yamstack.user.domain.User;
-import com.siksaurus.yamstack.user.domain.UserRole;
+import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.domain.AccountRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,19 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserDTO {
+public class AccountDTO {
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class loginDTO {
+        @NotNull
+        @Email
+        private String id;
+
+        @NotNull
+        private String password;
+    }
 
     @Getter
     @Setter
@@ -30,10 +42,10 @@ public class UserDTO {
         private String password;
 
         @NotNull
-        private Set<UserRole> role;
+        private AccountRole role;
 
         @Builder
-        public UserCreateDTO(String id, String password, Set<UserRole> role) {
+        public UserCreateDTO(String id, String password, AccountRole role) {
             Assert.notNull(id, "Not Null");
             Assert.notNull(password, "Not Null");
             Assert.notNull(role, "Not Null");
@@ -43,14 +55,14 @@ public class UserDTO {
             this.role = role;
         }
 
-        public User toEntity() {
-            User user = User.builder()
+        public Account toEntity() {
+            Account account = Account.builder()
                     .id(id)
                     .password(password)
-                    .roles(role)
+                    .role(role)
                     .build();
 
-            return user;
+            return account;
         }
     }
 }

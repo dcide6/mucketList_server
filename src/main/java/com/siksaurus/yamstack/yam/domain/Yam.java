@@ -2,7 +2,8 @@ package com.siksaurus.yamstack.yam.domain;
 
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.review.domain.Review;
-import com.siksaurus.yamstack.user.domain.User;
+import com.siksaurus.yamstack.account.domain.Account;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,8 +24,8 @@ public class Yam {
     private LocalDate genTime;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "restr_id")

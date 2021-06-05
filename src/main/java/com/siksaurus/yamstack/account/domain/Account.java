@@ -1,4 +1,4 @@
-package com.siksaurus.yamstack.user.domain;
+package com.siksaurus.yamstack.account.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -16,33 +16,31 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class Account {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "account_id")
     private String id;
+
     @JsonIgnore
+    @Column(name = "password")
     private String password;
 
     private String name;
 
     @Enumerated(EnumType.ORDINAL)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<UserRole> roles = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    private Set<Yam> yams;
+    private AccountRole role;
 
     @Builder
-    public User(String id, String password, String name, Set<UserRole> roles) {
+    public Account(String id, String password, String name, AccountRole role) {
         Assert.notNull(id,"Not Null");
         Assert.notNull(password,"Not Null");
         Assert.notNull(name, "Not Null");
-        Assert.notNull(roles,"Not Null");
+        Assert.notNull(role,"Not Null");
 
         this.id = id;
         this.password = password;
         this.name = name;
-        this.roles = roles;
+        this.role = role;
     }
 
 }

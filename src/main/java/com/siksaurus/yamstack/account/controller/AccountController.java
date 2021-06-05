@@ -1,7 +1,7 @@
-package com.siksaurus.yamstack.user.controller;
+package com.siksaurus.yamstack.account.controller;
 
-import com.siksaurus.yamstack.user.domain.User;
-import com.siksaurus.yamstack.user.service.UserService;
+import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,20 +11,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/api/v1/account")
+public class AccountController {
 
     @Autowired
-    UserService userService;
+    AccountService accountService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id) {
+    public ResponseEntity<Account> getAccountById(@PathVariable String id) {
 
-        User user = userService.getUser(id);
+        Account account = accountService.getAccount(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(user);
+                .body(account);
     }
 
 }

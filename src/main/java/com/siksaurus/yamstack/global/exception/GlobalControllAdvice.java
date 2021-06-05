@@ -13,7 +13,7 @@ public class GlobalControllAdvice {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> internalServerException (Exception e) {
         log.error("internal server exception", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
