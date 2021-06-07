@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class YamStackServerApplication {
     public static final String APPLICATION_LOCATIONS = "spring.config.location=" +
             "classpath:application.yml," +
-            "./app/config/springboot-mucketList_server/real-application.yml";
+            "/app/config/springboot-mucketList_server/real-application.yml";
     public static void main(String[] args) {
         //SpringApplication.run(YamStackServerApplication.class, args);
         new SpringApplicationBuilder(YamStackServerApplication.class)
