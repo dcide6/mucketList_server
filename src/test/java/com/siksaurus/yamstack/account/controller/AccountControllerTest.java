@@ -43,7 +43,7 @@ public class AccountControllerTest {
     public void getAccount() throws Exception {
 
         //given
-        var role = AccountRole.USER;
+        AccountRole role = AccountRole.USER;
 
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         HttpHeaders httpHeaders = new HttpHeaders();
