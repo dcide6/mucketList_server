@@ -5,6 +5,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 
 import java.security.Key;
 import java.util.Date;
