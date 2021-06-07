@@ -2,6 +2,19 @@
 spring:
   profiles:
     active: local
+  datasource:
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+
+#test를 위한 임시 키 실제 운영시 ec2에 둘것.
+jwt:
+  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
 
 ---
 spring:
