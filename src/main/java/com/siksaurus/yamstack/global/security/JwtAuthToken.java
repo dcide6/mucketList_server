@@ -53,7 +53,7 @@ public class JwtAuthToken {
 
     private Optional<String> createJwtAuthToken(String id, AccountRole role, Date expiredDate) {
 
-        var token = Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(id)
                 .claim(AUTHORITIES_KEY, role)
                 .signWith(key, SignatureAlgorithm.HS256)

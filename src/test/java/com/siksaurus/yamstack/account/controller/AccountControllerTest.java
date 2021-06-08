@@ -1,17 +1,14 @@
 package com.siksaurus.yamstack.account.controller;
 
+
+import com.siksaurus.yamstack.ControllerTest;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
-import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
@@ -23,21 +20,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class AccountControllerTest {
-    @Autowired
-    protected MockMvc mockMvc;
-
-    @Autowired
-    protected JwtAuthTokenProvider jwtAuthTokenProvider;
+public class AccountControllerTest extends ControllerTest {
 
     @MockBean
-    protected AccountService accountService;
-
-    private String makeJwtAuthToken(AccountRole role, Date expiredDate) {
-        return jwtAuthTokenProvider.createAuthToken("test",role, expiredDate).getToken();
-    }
+    AccountService accountService;
 
     @Test
     public void getAccount() throws Exception {

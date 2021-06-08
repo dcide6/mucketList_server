@@ -1,0 +1,38 @@
+= YAMSTACK HTTP API GUIDE
+:toc: left
+:toc-title: Contents
+:toclevels: 2
+:sectnums:
+:sectlinks:
+
+== Account
+
+NOTE: 사용자 계정 API 일반적인 고객은 USER 권한 사용
+
+=== Common
+
+.Account Role
+|===
+|Account Type|Value
+
+|Administrator
+|"ADMIN"
+
+
+|User
+|"USER"
+
+|Application
+|"APP"
+|===
+
+=== Get Account
+
+==== Request
+include::{snippets}/get-account/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/get-account/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/get-account/http-response.adoc[leveloffset=+3]
