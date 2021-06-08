@@ -22,6 +22,6 @@ public class AppRestControllerTest {
         String profile = this.restTemplate.getForObject("/profile",String.class);
 
         //then
-        assertThat(profile).isEqualTo("local 접속");
+        assertThat(profile).isEqualTo("local");
     }
 }

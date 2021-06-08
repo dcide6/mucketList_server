@@ -16,6 +16,6 @@ public class AppRestController {
     public String getProfile() {
         return Arrays.stream(env.getActiveProfiles())
                 .findFirst()
-                .orElse("")+" 접속";
+                .orElse("");
     }
 }
