@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +25,17 @@ public class AccountService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public Account saveAccount(Account account) {
+        return accountRepository.save(account);
+    }
+
+    public Account addAccount(Account account) {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        return accountRepository.save(account);
+    }
+
+    public Account changePassword(String id, String password) {
+        Account account = this.getAccountById(id);
+        account.setPassword(passwordEncoder.encode(password));
         return accountRepository.save(account);
     }
 

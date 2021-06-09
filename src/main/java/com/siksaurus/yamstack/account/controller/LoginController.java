@@ -95,7 +95,7 @@ public class LoginController {
             Account account = dto.toEntity();
             account.setEmailChecked(false);
             account.setAuthCode(authCode);
-            accountService.saveAccount(account);
+            accountService.addAccount(account);
 
             response = CommonResponse.builder()
                     .code("JOIN_SUCCESS")
