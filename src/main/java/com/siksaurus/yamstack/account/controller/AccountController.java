@@ -20,7 +20,7 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable String id) {
 
-        Account account = accountService.getAccount(id);
+        Account account = accountService.getAccountById(id);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)

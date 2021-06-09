@@ -42,7 +42,7 @@ public class AccountControllerTest extends ControllerTest {
                 .role(AccountRole.USER)
                 .build();
 
-        given(accountService.getAccount("test@aaa.bbb")).willReturn(account);
+        given(accountService.getAccountById("test@aaa.bbb")).willReturn(account);
 
         //when
         ResultActions result = mockMvc.perform(get("/api/v1/account/test@aaa.bbb").headers(httpHeaders));

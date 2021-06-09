@@ -2,15 +2,12 @@ package com.siksaurus.yamstack.account.controller;
 
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.util.Assert;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -32,7 +29,7 @@ public class AccountDTO {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class UserCreateDTO {
+    public static class CreateAccountDTO {
 
         @NotNull
         @Email
@@ -42,27 +39,45 @@ public class AccountDTO {
         private String password;
 
         @NotNull
-        private AccountRole role;
-
-        @Builder
-        public UserCreateDTO(String id, String password, AccountRole role) {
-            Assert.notNull(id, "Not Null");
-            Assert.notNull(password, "Not Null");
-            Assert.notNull(role, "Not Null");
-
-            this.id = id;
-            this.password = password;
-            this.role = role;
-        }
+        private String name;
 
         public Account toEntity() {
             Account account = Account.builder()
                     .id(id)
                     .password(password)
-                    .role(role)
+                    .name(name)
+                    .role(AccountRole.USER)
                     .build();
 
             return account;
         }
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class UpdateAccountDTO {
+
+        @NotNull
+        @Email
+        private String id;
+
+        private String password;
+
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class IdentifyAccountDTO {
+
+        @NotNull
+        @Email
+        private String id;
+
+        @NotNull
+        private String authCode;
+    }
+
 }

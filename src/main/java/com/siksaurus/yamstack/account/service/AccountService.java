@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,36 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(account);
     }
 
-    public Account getAccount(String userId) {
-        return accountRepository.findById(userId).get();
+    public Account getAccountById(String id) {
+        return accountRepository.findById(id).get();
+    }
+
+    public Account getAccountByName(String name) {
+        return accountRepository.findByName(name).get();
     }
 
     public void deleteAccount(Account account) {
         accountRepository.deleteById(account.getId());
+    }
+
+    public boolean checkDuplicateId(String id) {
+        Account account;
+        try{
+            account = accountRepository.findById(id).get();
+            return true;
+        }catch (NoSuchElementException e) {
+            return false;
+        }
+    }
+
+    public boolean checkDuplicateName(String name) {
+        Account account;
+        try{
+            account = accountRepository.findByName(name).get();
+            return true;
+        }catch (NoSuchElementException e) {
+            return false;
+        }
     }
 
     @Override

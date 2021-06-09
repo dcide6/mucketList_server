@@ -27,15 +27,20 @@ public class Account {
 
     private String name;
 
+    private boolean isEmailChecked;
+
+    @JsonIgnore
+    private String authCode;
+
     @Enumerated(EnumType.ORDINAL)
     private AccountRole role;
 
     @Builder
     public Account(String id, String password, String name, AccountRole role) {
-        Assert.notNull(id,"Not Null");
-        Assert.notNull(password,"Not Null");
-        Assert.notNull(name, "Not Null");
-        Assert.notNull(role,"Not Null");
+        Assert.notNull(id,"Id Not Null");
+        Assert.notNull(password,"Password Not Null");
+        Assert.notNull(name, "Name Not Null");
+        Assert.notNull(role,"Role Not Null");
 
         this.id = id;
         this.password = password;
