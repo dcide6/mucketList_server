@@ -1,6 +1,9 @@
 spring:
   profiles:
     active: local #기본환경
+
+spring.config.use-legacy-processing: true
+
 #Test
 ---
 spring:
@@ -29,9 +32,6 @@ spring:
 server:
   port: 8081
 
-jwt:
-  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
-
 ---
 spring:
   config:
@@ -42,6 +42,3 @@ spring:
 
 server:
   port: 8082
-
-jwt:
-  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
