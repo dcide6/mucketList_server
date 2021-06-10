@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,6 +34,9 @@ public class ControllerTest {
     @Autowired
     protected JwtAuthTokenProvider jwtAuthTokenProvider;
 
+    @MockBean
+    protected JavaMailSender mailSender;
+
     protected String makeJwtAuthToken(AccountRole role, Date expiredDate) {
         return jwtAuthTokenProvider.createAuthToken("test",role, expiredDate).getToken();
     }
@@ -43,8 +48,8 @@ public class ControllerTest {
                 .apply(documentationConfiguration(restDocumentation)
                         .uris()
                         .withScheme("https")
-                        .withHost("api.yamstack.com") //todo 도메인 정해지면 변경 필요
-                        .withPort(80)
+                        .withHost("yam-stack.com") //todo 도메인 정해지면 변경 필요
+                        .withPort(443)
                 )
                 .alwaysDo(document("{method-name}"
                         , preprocessRequest(prettyPrint())

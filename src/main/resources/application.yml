@@ -17,21 +17,6 @@ spring:
     activate:
       on-profile: local
 
-#SMTP를 위한 임시 키 실제 운영시에는 ec2에 둘것
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: dcide6@gmail.com
-    password: rhddydrPwjd6
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-
-#test를 위한 임시 키 실제 운영시 ec2에 둘것.
-jwt:
-  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
-
-
 #운영
 ---
 spring:
@@ -44,9 +29,6 @@ spring:
 server:
   port: 8081
 
-jwt:
-  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
-
 ---
 spring:
   config:
@@ -57,6 +39,3 @@ spring:
 
 server:
   port: 8082
-
-jwt:
-  base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
