@@ -6,7 +6,7 @@ spring:
       "set2": "set2, real-db"
 logging:
   file:
-    path: "~/app/logs"
+    path: "/home/ec2-user/app/logs"
 
   logback:
     rollingpolicy:
