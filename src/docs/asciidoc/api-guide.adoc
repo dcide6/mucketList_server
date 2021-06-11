@@ -26,13 +26,13 @@ NOTE: 본인인증이 되지 않을 경우 message에 token 대신 "Identity ver
 === 회원 가입
 
 ==== Request
-include::{snippets}/join/http-request.adoc[leveloffset=+3]
+include::{snippets}/create-account/http-request.adoc[leveloffset=+3]
 
 ==== Curl Request
-include::{snippets}/join/curl-request.adoc[leveloffset=+3]
+include::{snippets}/create-account/curl-request.adoc[leveloffset=+3]
 
 ==== Response
-include::{snippets}/join/http-response.adoc[leveloffset=+3]
+include::{snippets}/create-account/http-response.adoc[leveloffset=+3]
 
 NOTE: 회원 가입 실패시 "code: DUPLICATED_ACCOUNT", "status: 400"
 
