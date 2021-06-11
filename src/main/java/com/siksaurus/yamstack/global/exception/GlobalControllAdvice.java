@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -14,23 +15,30 @@ public class GlobalControllAdvice {
 
     @ExceptionHandler(LoginFailedException.class)
     protected ResponseEntity<ErrorResponse> loginFailedException (LoginFailedException e) {
-        log.error("internal server exception", e);
+        log.error("login fail exception", e);
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.LOGIN_FAILED);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(TokenValidFailedException.class)
     protected ResponseEntity<ErrorResponse> tokenValidFailedException (TokenValidFailedException e) {
-        log.error("internal server exception", e);
+        log.error("token valid fail exception", e);
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.TOKEN_GENERATION_FAILED);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorResponse> noSuchElementException (NoSuchElementException e) {
-        log.error("internal server exception", e);
+        log.error("no such element exception", e);
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ENTITY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    protected ResponseEntity<ErrorResponse> insufficientAuthenticationException (InsufficientAuthenticationException e) {
+        log.error(e.getMessage());
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
