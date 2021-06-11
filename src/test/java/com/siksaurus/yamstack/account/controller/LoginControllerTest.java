@@ -5,8 +5,22 @@ import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.account.service.LoginService;
+import com.siksaurus.yamstack.global.security.JwtAuthToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Optional;
+
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 public class LoginControllerTest extends ControllerTest {
 
@@ -17,7 +31,82 @@ public class LoginControllerTest extends ControllerTest {
     AccountService accountService;
 
     @Test
-    public void Join() throws Exception {
+    public void login() throws Exception {
+
+        //given
+        AccountDTO.loginDTO loginDTO = new AccountDTO.loginDTO();
+        loginDTO.setId("test@aaa.bbb");
+        loginDTO.setPassword("1234");
+
+        Account account = Account.builder()
+                .id("test@aaa.bbb")
+                .name("test")
+                .password("1234")
+                .role(AccountRole.USER)
+                .build();
+        account.setEmailChecked(true);
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",AccountRole.USER, expiredDate);
+
+        given(loginService.login(loginDTO.getId(), loginDTO.getPassword())).willReturn(Optional.ofNullable(account));
+        given(loginService.createAuthToken(account)).willReturn(jwtAuthToken);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/sign")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(loginDTO)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value(jwtAuthToken.getToken()));
+    }
+
+    @Test
+    public void checkDuplicateId() throws Exception {
+
+        //given
+        given(accountService.checkDuplicateId("test@aaa.bbb")).willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/login/idCheck/test@aaa.bbb"));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("true"));
+    }
+
+    @Test
+    public void checkDuplicateName() throws Exception {
+
+        //given
+        given(accountService.checkDuplicateName("test")).willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/login/nameCheck/test"));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("true"));
+    }
+
+    @Test
+    public void createAccount() throws Exception {
+
+        //given
+        AccountDTO.CreateAccountDTO dto = new AccountDTO.CreateAccountDTO();
+        dto.setId("test@aaa.bbb");
+        dto.setPassword("1234");
+        dto.setName("test");
 
         Account account = Account.builder()
                 .id("test@aaa.bbb")
@@ -27,6 +116,79 @@ public class LoginControllerTest extends ControllerTest {
                 .build();
         account.setEmailChecked(false);
 
+        given(accountService.checkDuplicateId(dto.getId())).willReturn(true);
+        given(accountService.checkDuplicateName(dto.getName())).willReturn(true);
+        given(loginService.authMailSend(dto.getId(), dto.getName())).willReturn("123456");
+        given(accountService.addAccount(dto.toEntity())).willReturn(account);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/join")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(dto)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("JOIN_SUCCESS"));
+
+
+    }
+
+    @Test
+    public void accountIdentify() throws Exception {
+
+        //given
+        AccountDTO.IdentifyAccountDTO dto = new AccountDTO.IdentifyAccountDTO();
+        dto.setId("test@aaa.bbb");
+        dto.setAuthCode("1234565");
+
+        given(loginService.checkAuthCode(dto.getId(), dto.getAuthCode())).willReturn(true);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/identify")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(dto)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("IDENTIFY_SUCCESS"));
+    }
+
+    @Test
+    public void authCodeResend() throws Exception {
+
+        //given
+        AccountDTO.UpdateAccountDTO dto = new AccountDTO.UpdateAccountDTO();
+        dto.setId("test@aaa.bbb");
+        dto.setName("test");
+        dto.setPassword("1234");
+
+        Account account = Account.builder()
+                .id("test@aaa.bbb")
+                .name("test")
+                .password("1234")
+                .role(AccountRole.USER)
+                .build();
+
+        given(accountService.getAccountById(dto.getId())).willReturn(account);
+        given(loginService.authMailSend(dto.getId(), dto.getName())).willReturn("123456");
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/authCode")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(objectMapper.writeValueAsString(dto)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.code").value("AUTHCODE_RESEND"));
     }
 
 }

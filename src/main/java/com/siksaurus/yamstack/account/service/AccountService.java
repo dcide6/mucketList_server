@@ -55,9 +55,9 @@ public class AccountService implements UserDetailsService {
         Account account;
         try{
             account = accountRepository.findById(id).get();
-            return true;
-        }catch (NoSuchElementException e) {
             return false;
+        }catch (NoSuchElementException e) {
+            return true;
         }
     }
 
@@ -65,9 +65,9 @@ public class AccountService implements UserDetailsService {
         Account account;
         try{
             account = accountRepository.findByName(name).get();
-            return true;
-        }catch (NoSuchElementException e) {
             return false;
+        }catch (NoSuchElementException e) {
+            return true;
         }
     }
 

@@ -85,12 +85,6 @@ public class LoginController {
 
         CommonResponse response;
         if (accountService.checkDuplicateId(dto.getId()) && accountService.checkDuplicateName(dto.getName())) {
-            response = CommonResponse.builder()
-                    .code("DUPLICATED_ACCOUNT")
-                    .status(400)
-                    .message("DUPLICATED_ACCOUNT")
-                    .build();
-        } else {
             String authCode = loginService.authMailSend(dto.getId(), dto.getName());
             Account account = dto.toEntity();
             account.setEmailChecked(false);
@@ -101,6 +95,13 @@ public class LoginController {
                     .code("JOIN_SUCCESS")
                     .status(200)
                     .message("JOIN_SUCCESS")
+                    .build();
+
+        } else {
+            response = CommonResponse.builder()
+                    .code("DUPLICATED_ACCOUNT")
+                    .status(400)
+                    .message("DUPLICATED_ACCOUNT")
                     .build();
         }
         return ResponseEntity.ok()

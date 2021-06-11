@@ -1,5 +1,6 @@
 package com.siksaurus.yamstack;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,9 @@ public class ControllerTest {
     protected MockMvc mockMvc;
 
     @Autowired
+    protected ObjectMapper objectMapper;
+
+    @Autowired
     protected JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @MockBean
@@ -47,9 +51,9 @@ public class ControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation)
                         .uris()
-                        .withScheme("https")
+                        .withScheme("http")
                         .withHost("yam-stack.com") //todo 도메인 정해지면 변경 필요
-                        .withPort(443)
+                        .withPort(80)
                 )
                 .alwaysDo(document("{method-name}"
                         , preprocessRequest(prettyPrint())
