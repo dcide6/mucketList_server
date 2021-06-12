@@ -1,5 +1,6 @@
 package com.siksaurus.yamstack.restaurant.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class Restaurant {
     private String category1depth;
     private String category2depth;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "restaurant")
     private Set<Yam> yams;
 }

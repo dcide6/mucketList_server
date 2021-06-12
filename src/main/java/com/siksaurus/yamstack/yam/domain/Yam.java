@@ -1,5 +1,7 @@
 package com.siksaurus.yamstack.yam.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.account.domain.Account;
@@ -23,10 +25,12 @@ public class Yam {
     private long id;
     private LocalDate genTime;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "restr_id")
     private Restaurant restaurant;
@@ -42,6 +46,7 @@ public class Yam {
     private String memo;
     private boolean closed;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "yam")
     private Review review;
 
