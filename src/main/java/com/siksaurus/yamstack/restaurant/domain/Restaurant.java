@@ -32,7 +32,6 @@ public class Restaurant {
     private String category1depth;
     private String category2depth;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "restaurant")
     private Set<Yam> yams;
 }

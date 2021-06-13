@@ -1,5 +1,7 @@
 package com.siksaurus.yamstack.review.service;
 
+
+import com.siksaurus.yamstack.review.controller.ReviewDTO;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.review.domain.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +14,15 @@ import javax.transaction.Transactional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
 
-    /* 여기얌 - 리뷰 상세 조회*/
+    /* 얌/여기얌 - 리뷰 상세 조회*/
     @Transactional
     public Review getReviewById(Long id) {
         return reviewRepository.findById(id).get();
+    }
+
+    /* 얌 - 리뷰 등록*/
+    @Transactional
+    public Long createReview(ReviewDTO.CreateReviewDTO dto) {
+        return reviewRepository.save(dto.toEntity()).getId();
     }
 }

@@ -25,12 +25,10 @@ public class Yam {
     private long id;
     private LocalDate genTime;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "restr_id")
     private Restaurant restaurant;
@@ -46,7 +44,6 @@ public class Yam {
     private String memo;
     private boolean closed;
 
-    @JsonManagedReference
     @OneToOne(mappedBy = "yam")
     private Review review;
 

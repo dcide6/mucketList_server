@@ -1,6 +1,6 @@
 package com.siksaurus.yamstack.review.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class Review {
     private Long id;
 
     @OneToOne
-    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "yam_id")
     private Yam yam;
 

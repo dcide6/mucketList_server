@@ -7,18 +7,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReviewDTO {
 
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class ReviewUpdateDTO {
+    public static class CreateReviewDTO {
 
         @NotNull
         private Long id;
@@ -31,18 +31,19 @@ public class ReviewDTO {
         private boolean isShared;
         private Company company;
 
-        public ReviewUpdateDTO(Review review){
-            this.id = review.getId();
-            this.yam = review.getYam();
-            this.genTime = review.getGenTime();
-            this.visitTime = review.getVisitTime();
-            this.imagePath = review.getImagePath();
-            this.comment = review.getComment();
-            this.likeNum =review.getLikeNum();
-            this.isShared = review.isShared();
-            this.company = review.getCompany();
+        public Review toEntity() {
+            Review review = Review.builder()
+                    .id(id)
+                    .yam(yam)
+                    .genTime(genTime)
+                    .visitTime(visitTime)
+                    .imagePath(imagePath)
+                    .comment(comment)
+                    .likeNum(likeNum)
+                    .isShared(isShared)
+                    .company(company)
+                    .build();
+            return review;
         }
     }
-
-
 }
