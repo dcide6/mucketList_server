@@ -35,11 +35,11 @@ public class LoginControllerTest extends ControllerTest {
 
         //given
         AccountDTO.loginDTO loginDTO = new AccountDTO.loginDTO();
-        loginDTO.setId("test@aaa.bbb");
+        loginDTO.setEmail("test@aaa.bbb");
         loginDTO.setPassword("1234");
 
         Account account = Account.builder()
-                .id("test@aaa.bbb")
+                .email("test@aaa.bbb")
                 .name("test")
                 .password("1234")
                 .role(AccountRole.USER)
@@ -49,7 +49,7 @@ public class LoginControllerTest extends ControllerTest {
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",AccountRole.USER, expiredDate);
 
-        given(loginService.login(loginDTO.getId(), loginDTO.getPassword())).willReturn(Optional.ofNullable(account));
+        given(loginService.login(loginDTO.getEmail(), loginDTO.getPassword())).willReturn(Optional.ofNullable(account));
         given(loginService.createAuthToken(account)).willReturn(jwtAuthToken);
 
         //when
@@ -69,10 +69,10 @@ public class LoginControllerTest extends ControllerTest {
     public void checkDuplicateId() throws Exception {
 
         //given
-        given(accountService.checkDuplicateId("test@aaa.bbb")).willReturn(true);
+        given(accountService.checkDuplicateEmail("test@aaa.bbb")).willReturn(true);
 
         //when
-        ResultActions result = mockMvc.perform(get("/login/idCheck/test@aaa.bbb"));
+        ResultActions result = mockMvc.perform(get("/login/emailCheck/test@aaa.bbb"));
 
         //then
         result
@@ -104,21 +104,21 @@ public class LoginControllerTest extends ControllerTest {
 
         //given
         AccountDTO.CreateAccountDTO dto = new AccountDTO.CreateAccountDTO();
-        dto.setId("test@aaa.bbb");
+        dto.setEmail("test@aaa.bbb");
         dto.setPassword("1234");
         dto.setName("test");
 
         Account account = Account.builder()
-                .id("test@aaa.bbb")
+                .email("test@aaa.bbb")
                 .password("1234")
                 .name("test")
                 .role(AccountRole.USER)
                 .build();
         account.setEmailChecked(false);
 
-        given(accountService.checkDuplicateId(dto.getId())).willReturn(true);
+        given(accountService.checkDuplicateEmail(dto.getEmail())).willReturn(true);
         given(accountService.checkDuplicateName(dto.getName())).willReturn(true);
-        given(loginService.authMailSend(dto.getId(), dto.getName())).willReturn("123456");
+        given(loginService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
         given(accountService.addAccount(dto.toEntity())).willReturn(account);
 
         //when
@@ -141,10 +141,10 @@ public class LoginControllerTest extends ControllerTest {
 
         //given
         AccountDTO.IdentifyAccountDTO dto = new AccountDTO.IdentifyAccountDTO();
-        dto.setId("test@aaa.bbb");
+        dto.setEmail("test@aaa.bbb");
         dto.setAuthCode("1234565");
 
-        given(loginService.checkAuthCode(dto.getId(), dto.getAuthCode())).willReturn(true);
+        given(loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())).willReturn(true);
 
         //when
         ResultActions result = mockMvc.perform(post("/login/identify")
@@ -164,19 +164,19 @@ public class LoginControllerTest extends ControllerTest {
 
         //given
         AccountDTO.UpdateAccountDTO dto = new AccountDTO.UpdateAccountDTO();
-        dto.setId("test@aaa.bbb");
+        dto.setEmail("test@aaa.bbb");
         dto.setName("test");
         dto.setPassword("1234");
 
         Account account = Account.builder()
-                .id("test@aaa.bbb")
+                .email("test@aaa.bbb")
                 .name("test")
                 .password("1234")
                 .role(AccountRole.USER)
                 .build();
 
-        given(accountService.getAccountById(dto.getId())).willReturn(account);
-        given(loginService.authMailSend(dto.getId(), dto.getName())).willReturn("123456");
+        given(accountService.getAccountByEmail(dto.getEmail())).willReturn(account);
+        given(loginService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
 
         //when
         ResultActions result = mockMvc.perform(post("/login/authCode")

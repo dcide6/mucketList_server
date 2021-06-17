@@ -28,8 +28,8 @@ public class LoginService {
 
     private final static long LOGIN_RETENTION_MINUTES = 60 * 24;
 
-    public Optional<Account> login(String id, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(id, password);
+    public Optional<Account> login(String email, String password) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
 
         //사용자 비밀번호 체크, 패스워드 일치하지 않는다면 Exception 발생 및 이후 로직 실행 안됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -37,14 +37,14 @@ public class LoginService {
         //로그인 성공하면 인증 객체 생성 및 스프링 시큐리티 설정
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Account account = accountService.getAccountById(id);
+        Account account = accountService.getAccountByEmail(email);
         return Optional.ofNullable(account);
     }
 
     public JwtAuthToken createAuthToken(Account account) {
 
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(LOGIN_RETENTION_MINUTES).atZone(ZoneId.systemDefault()).toInstant());
-        return jwtAuthTokenProvider.createAuthToken(account.getId(), account.getRole(), expiredDate);
+        return jwtAuthTokenProvider.createAuthToken(account.getEmail(), account.getRole(), expiredDate);
     }
 
     public String authMailSend(String id, String name) {
@@ -58,8 +58,8 @@ public class LoginService {
         return str;
     }
 
-    public boolean checkAuthCode(String id, String authCode) {
-        Account account = accountService.getAccountById(id);
+    public boolean checkAuthCode(String email, String authCode) {
+        Account account = accountService.getAccountByEmail(email);
         boolean rst = account.getAuthCode().equals(authCode);
         if(rst) {
             account.setEmailChecked(true);

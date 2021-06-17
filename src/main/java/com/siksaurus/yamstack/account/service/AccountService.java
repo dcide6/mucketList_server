@@ -3,6 +3,9 @@ package com.siksaurus.yamstack.account.service;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.domain.repository.AccountRepository;
+import com.siksaurus.yamstack.yam.domain.Yam;
+import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
+import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,8 +16,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,6 +27,7 @@ import java.util.NoSuchElementException;
 public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
+    private final YamService yamService;
     private final PasswordEncoder passwordEncoder;
 
     public Account saveAccount(Account account) {
@@ -33,28 +39,33 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(account);
     }
 
-    public Account changePassword(String id, String password) {
-        Account account = this.getAccountById(id);
+    public Account changePassword(String email, String password) {
+        Account account = this.getAccountByEmail(email);
         account.setPassword(passwordEncoder.encode(password));
         return accountRepository.save(account);
     }
 
-    public Account getAccountById(String id) {
-        return accountRepository.findById(id).get();
+    public Account getAccountByEmail(String email) {
+        return accountRepository.findByEmail(email).get();
     }
 
     public Account getAccountByName(String name) {
         return accountRepository.findByName(name).get();
     }
 
-    public void deleteAccount(Account account) {
+    @Transactional
+    public void deleteAccountByEmail(String email) {
+        Account account = this.getAccountByEmail(email);
+        List<Yam> yamList = yamService.getYamListByUserEmail(email);
+        yamList.forEach(yam -> yam.setAccount(null));
+        yamService.saveYams(yamList);
         accountRepository.deleteById(account.getId());
     }
 
-    public boolean checkDuplicateId(String id) {
+    public boolean checkDuplicateEmail(String email) {
         Account account;
         try{
-            account = accountRepository.findById(id).get();
+            account = accountRepository.findByEmail(email).get();
             return false;
         }catch (NoSuchElementException e) {
             return true;
@@ -74,9 +85,9 @@ public class AccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Account account = accountRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        Account account = accountRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));
 
-        return new User(account.getId(), account.getPassword(), authorities(account.getRole()));
+        return new User(account.getEmail(), account.getPassword(), authorities(account.getRole()));
     }
 
     private Collection<? extends GrantedAuthority> authorities(AccountRole role) {

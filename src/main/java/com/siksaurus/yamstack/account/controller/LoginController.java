@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @RestController
@@ -24,7 +25,7 @@ public class LoginController {
     @PostMapping("/sign")
     public ResponseEntity<CommonResponse> login(@RequestBody AccountDTO.loginDTO loginDTO) {
 
-        Optional<Account> account = loginService.login(loginDTO.getId(), loginDTO.getPassword());
+        Optional<Account> account = loginService.login(loginDTO.getEmail(), loginDTO.getPassword());
 
         if (account.isPresent()) {
 
@@ -36,6 +37,9 @@ public class LoginController {
                         .message("Identity verification is required")
                         .build();
             } else {
+                Account user = account.get();
+                user.setLastLoginDate(LocalDate.now());
+                accountService.saveAccount(user);
                 JwtAuthToken jwtAuthToken = (JwtAuthToken) loginService.createAuthToken(account.get());
                 response = CommonResponse.builder()
                         .code("LOGIN_SUCCESS")
@@ -52,13 +56,13 @@ public class LoginController {
         }
     }
 
-    @GetMapping("/idCheck/{id}")
-    public ResponseEntity<CommonResponse> checkDuplicateId(@PathVariable String id) {
+    @GetMapping("/emailCheck/{email}")
+    public ResponseEntity<CommonResponse> checkDuplicateEmail(@PathVariable String email) {
 
         CommonResponse response = CommonResponse.builder()
                 .code("CHECK_ID")
                 .status(200)
-                .message(String.valueOf(accountService.checkDuplicateId(id)))
+                .message(String.valueOf(accountService.checkDuplicateEmail(email)))
                 .build();
 
         return ResponseEntity.ok()
@@ -84,8 +88,8 @@ public class LoginController {
     public ResponseEntity<CommonResponse> createAccount(@RequestBody AccountDTO.CreateAccountDTO dto) {
 
         CommonResponse response;
-        if (accountService.checkDuplicateId(dto.getId()) && accountService.checkDuplicateName(dto.getName())) {
-            String authCode = loginService.authMailSend(dto.getId(), dto.getName());
+        if (accountService.checkDuplicateEmail(dto.getEmail()) && accountService.checkDuplicateName(dto.getName())) {
+            String authCode = loginService.authMailSend(dto.getEmail(), dto.getName());
             Account account = dto.toEntity();
             account.setEmailChecked(false);
             account.setAuthCode(authCode);
@@ -113,7 +117,7 @@ public class LoginController {
     public ResponseEntity<CommonResponse> accountIdentify(@RequestBody AccountDTO.IdentifyAccountDTO dto) {
 
         CommonResponse response;
-        if (loginService.checkAuthCode(dto.getId(), dto.getAuthCode())) {
+        if (loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())) {
             response = CommonResponse.builder()
                     .code("IDENTIFY_SUCCESS")
                     .status(200)
@@ -134,8 +138,8 @@ public class LoginController {
 
     @PostMapping("/authCode")
     public ResponseEntity<CommonResponse> authCodeResend(@RequestBody AccountDTO.UpdateAccountDTO dto) {
-        Account account = accountService.getAccountById(dto.getId());
-        String authCode = loginService.authMailSend(dto.getId(), dto.getName());
+        Account account = accountService.getAccountByEmail(dto.getEmail());
+        String authCode = loginService.authMailSend(dto.getEmail(), dto.getName());
         account.setAuthCode(authCode);
         account.setEmailChecked(false);
         accountService.saveAccount(account);

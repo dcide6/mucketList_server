@@ -80,7 +80,7 @@ include::{snippets}/auth-code-resend/curl-request.adoc[leveloffset=+3]
 ==== Response
 include::{snippets}/auth-code-resend/http-response.adoc[leveloffset=+3]
 
-== Account
+== 사용자 계정
 
 NOTE: 사용자 계정 API 일반적인 고객은 USER 권한 사용
 
@@ -101,7 +101,7 @@ NOTE: 사용자 계정 API 일반적인 고객은 USER 권한 사용
 |"APP"
 |===
 
-=== Get Account
+=== 사용자 계정 가져오기
 
 ==== Request
 include::{snippets}/get-account/http-request.adoc[leveloffset=+3]
@@ -111,3 +111,14 @@ include::{snippets}/get-account/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/get-account/http-response.adoc[leveloffset=+3]
+
+=== 사용자 계정 삭제하기
+
+==== Request
+include::{snippets}/delete-account/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/delete-account/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/delete-account/http-response.adoc[leveloffset=+3]

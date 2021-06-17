@@ -36,16 +36,36 @@ public class AccountControllerTest extends ControllerTest {
         httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
 
         Account account = Account.builder()
-                .id("test@aaa.bbb")
+                .email("test@aaa.bbb")
                 .password("1234")
                 .name("test")
                 .role(AccountRole.USER)
                 .build();
 
-        given(accountService.getAccountById("test@aaa.bbb")).willReturn(account);
+        given(accountService.getAccountByEmail("test@aaa.bbb")).willReturn(account);
 
         //when
         ResultActions result = mockMvc.perform(get("/api/v1/account/test@aaa.bbb").headers(httpHeaders));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void deleteAccount() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/v1/account/test@aaa.bbb").headers(httpHeaders));
 
         //then
         result

@@ -20,7 +20,7 @@ public class AccountDTO {
     public static class loginDTO {
         @NotNull
         @Email
-        private String id;
+        private String email;
 
         @NotNull
         private String password;
@@ -33,7 +33,7 @@ public class AccountDTO {
 
         @NotNull
         @Email
-        private String id;
+        private String email;
 
         @NotNull
         private String password;
@@ -43,7 +43,7 @@ public class AccountDTO {
 
         public Account toEntity() {
             Account account = Account.builder()
-                    .id(id)
+                    .email(email)
                     .password(password)
                     .name(name)
                     .role(AccountRole.USER)
@@ -60,7 +60,7 @@ public class AccountDTO {
 
         @NotNull
         @Email
-        private String id;
+        private String email;
 
         private String password;
 
@@ -74,7 +74,7 @@ public class AccountDTO {
 
         @NotNull
         @Email
-        private String id;
+        private String email;
 
         @NotNull
         private String authCode;
