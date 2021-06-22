@@ -27,9 +27,6 @@ public class LoginControllerTest extends ControllerTest {
     @MockBean
     LoginService loginService;
 
-    @MockBean
-    AccountService accountService;
-
     @Test
     public void login() throws Exception {
 
@@ -54,7 +51,7 @@ public class LoginControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(post("/login/sign")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginDTO)));
 
         //then
@@ -123,7 +120,7 @@ public class LoginControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(post("/login/join")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
 
         //then
@@ -148,7 +145,7 @@ public class LoginControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(post("/login/identify")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
 
         //then
@@ -180,7 +177,7 @@ public class LoginControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(post("/login/authCode")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
 
         //then

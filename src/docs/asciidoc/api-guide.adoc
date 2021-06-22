@@ -122,3 +122,18 @@ include::{snippets}/delete-account/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/delete-account/http-response.adoc[leveloffset=+3]
+
+== 식당
+
+NOTE: 식당 추가(얌리스트 생성), 여기얌과 관련된 정보들
+
+=== 식당 리스트 추가
+
+==== Request
+include::{snippets}/create-restaurant/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/create-restaurant/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/create-restaurant/http-response.adoc[leveloffset=+3]

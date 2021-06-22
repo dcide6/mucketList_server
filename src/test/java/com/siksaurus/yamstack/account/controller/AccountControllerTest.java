@@ -22,9 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class AccountControllerTest extends ControllerTest {
 
-    @MockBean
-    AccountService accountService;
-
     @Test
     public void getAccount() throws Exception {
 

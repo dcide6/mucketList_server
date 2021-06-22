@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.account.controller;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.global.CommonResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/account")
+@RequiredArgsConstructor
 public class AccountController {
 
-    @Autowired
-    AccountService accountService;
+    private final AccountService accountService;
 
     @GetMapping("/{email}")
     public ResponseEntity<Account> getAccountByEmail(@PathVariable String email) {
