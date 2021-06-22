@@ -9,6 +9,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -28,6 +31,10 @@ public class Review {
 
     private LocalDate genTime;
     private LocalDate visitTime;
+
+//    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<ReviewImage> reviewImages = new ArrayList<>();
+
     private String imagePath;
     private String comment;
     private int likeNum;
@@ -39,7 +46,7 @@ public class Review {
                   String comment, int likeNum, boolean isShared, Company company){
         this.id = id;
         this.yam = yam;
-        this.genTime = genTime;
+        this.genTime = LocalDate.now();
         this.visitTime = visitTime;
         this.imagePath = imagePath;
         this.comment = comment;
@@ -47,4 +54,14 @@ public class Review {
         this.isShared = isShared;
         this.company = company;
     }
+
+//    public void addImage(ReviewImage reviewImage) {
+//        reviewImages.add(reviewImage);
+//        reviewImage.setReview(this);
+//    }
+//
+//    public void removeImage(ReviewImage reviewImage) {
+//        reviewImages.remove(reviewImage);
+//        reviewImage.setReview(null);
+//    }
 }

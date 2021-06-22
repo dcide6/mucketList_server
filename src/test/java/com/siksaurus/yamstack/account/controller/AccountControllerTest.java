@@ -5,6 +5,7 @@ import com.siksaurus.yamstack.ControllerTest;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
+import com.siksaurus.yamstack.review.s3upload.S3Uploader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;

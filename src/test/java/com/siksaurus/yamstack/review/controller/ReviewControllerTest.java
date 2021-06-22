@@ -10,16 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +41,7 @@ class ReviewControllerTest extends ControllerTest {
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
 
         Review review = Review.builder()
                 .id(id)
@@ -68,11 +72,18 @@ class ReviewControllerTest extends ControllerTest {
     void createReview() throws Exception {
         //given
         ReviewDTO.CreateReviewDTO dto = new ReviewDTO.CreateReviewDTO();
-        dto.setComment("맛집임 추천!");
+        dto.setComment("맛집임 추천");
         dto.setCompany(Company.FRIEND);
         dto.setGenTime(LocalDate.now());
         dto.setImagePath("");
         dto.setShared(true);
+
+        MockMultipartFile reviewdata = new MockMultipartFile("reviewdata", "",
+                "application/json", objectMapper.writeValueAsString(dto).getBytes(Charset.forName("UTF-8")));
+
+        MockMultipartFile image = new MockMultipartFile("image","test.jpg",
+                "multipart/form-data","<<jpg data>>".getBytes());
+
 
         AccountRole role = AccountRole.USER;
 
@@ -82,10 +93,19 @@ class ReviewControllerTest extends ControllerTest {
 
         given(reviewService.createReview(dto)).willReturn(8l);
 
+
         //when
-        ResultActions result = mockMvc.perform(post("/api/v1/review/").headers(httpHeaders)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(objectMapper.writeValueAsString(dto)));
+        ResultActions result = mockMvc.perform(
+                multipart("/api/v1/review")
+                        .file(reviewdata)
+                        .file(image)
+                        //.part(new MockPart("image", image.getBytes()))
+                        //.part(new MockPart("reviewdata",objectMapper.writeValueAsString(dto).getBytes()))
+                        //.param("reviewdata", objectMapper.writeValueAsString(dto))
+                        //.contentType(objectMapper.writeValueAsString(dto))
+                        .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
 
         //then
         result
