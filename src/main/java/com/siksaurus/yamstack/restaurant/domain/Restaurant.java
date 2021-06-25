@@ -33,6 +33,7 @@ public class Restaurant {
     private String y;
     private String category1depth;
     private String category2depth;
+    private Integer closedCount;
 
     @JsonIgnore
     @OneToMany(mappedBy = "restaurant")
@@ -64,5 +65,6 @@ public class Restaurant {
         this.y = y;
         this.category1depth = category1depth;
         this.category2depth = category2depth;
+        this.closedCount = 0;
     }
 }

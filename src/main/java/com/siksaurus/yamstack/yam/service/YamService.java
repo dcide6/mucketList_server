@@ -9,6 +9,8 @@ import com.siksaurus.yamstack.yam.domain.Yam;
 import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -59,6 +61,10 @@ public class YamService {
 
     public List<Yam> getYamListByUserEmail(String email) {
         return yamRepository.findByAccount_Email(email);
+    }
+
+    public Page<Yam> getYamListByUserEmail(String email, Pageable pageable) {
+        return yamRepository.findByAccount_Email(email, pageable);
     }
 
     public void deleteYam(Yam yam) {
