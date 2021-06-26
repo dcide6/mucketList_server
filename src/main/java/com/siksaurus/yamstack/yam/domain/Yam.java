@@ -1,5 +1,6 @@
 package com.siksaurus.yamstack.yam.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.account.domain.Account;
@@ -22,9 +23,12 @@ public class Yam {
     @GeneratedValue
     @Column(name = "yam_id")
     private long id;
-    private LocalDate genTime;
+    private LocalDate genTime;      //생성 시간
+    private LocalDate competeTime;  //완료 시간 (1.리뷰작성에서 방문날짜 선택, 2.별로얌 선택시
+    private boolean isGood;         //true 재방문 의사 있음, false 재방문 의사 없음, 초기값 true
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "account_id")
     private Account account;
 
@@ -41,7 +45,6 @@ public class Yam {
     private Set<Tag> tags;
 
     private String memo;
-    private boolean closed;
 
     @OneToOne(mappedBy = "yam")
     private Review review;
@@ -63,6 +66,7 @@ public class Yam {
         this.foods = foods;
         this.tags = tags;
         this.memo = memo;
+        this.isGood = true;
     }
 
 }

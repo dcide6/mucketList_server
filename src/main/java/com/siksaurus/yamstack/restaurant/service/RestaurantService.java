@@ -6,6 +6,8 @@ import com.siksaurus.yamstack.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
@@ -16,7 +18,11 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
-    public Restaurant getRestaurantByName(String name) {
+    public Restaurant getRestaurantByApiId(String apiId) {
+        return restaurantRepository.findByApiId(apiId).get();
+    }
+
+    public List<Restaurant> getRestaurantByName(String name) {
         return restaurantRepository.findByName(name).get();
     }
 
@@ -42,7 +48,7 @@ public class RestaurantService {
                         .category1depth(categories[0].trim())
                         .category2depth(categories[1].trim())
                         .build();
-                rst = this.restaurantRepository.save(restaurant);
+                rst = this.saveRestaurant(restaurant);
             }else {
                 Restaurant restaurant = Restaurant.builder()
                         .name(dto.getPlace_name())
@@ -50,7 +56,7 @@ public class RestaurantService {
                         .category1depth(dto.getCategory_name())
                         .category2depth(dto.getCategory_name())
                         .build();
-                rst = this.restaurantRepository.save(restaurant);
+                rst = this.saveRestaurant(restaurant);
             }
         }
 

@@ -1,5 +1,6 @@
 package com.siksaurus.yamstack.yam.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.jsonwebtoken.lang.Assert;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import javax.persistence.Id;
 public class Tag {
 
     @Id
+    @JsonIgnore
     @GeneratedValue
     private long id;
 
