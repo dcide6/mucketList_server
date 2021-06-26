@@ -1,3 +1,9 @@
+buildscript {
+    ext {
+        queryDslVersion = "4.4.0"
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.4.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
@@ -6,7 +12,7 @@ plugins {
 }
 
 group = 'com.siksaurus'
-version = '0.0.7-SNAPSHOT'
+version = '0.0.9-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -32,6 +38,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor(
+            "javax.persistence:javax.persistence-api",
+            "javax.annotation:javax.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtime 'io.jsonwebtoken:jjwt-impl:0.11.2'
@@ -47,6 +59,14 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+        }
+    }
+}
+
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
@@ -59,7 +79,7 @@ asciidoctor {
 
 bootJar {
     dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
+    from("${asciidoctor.outputDir}/html5") {
         into 'static/docs'
     }
 }

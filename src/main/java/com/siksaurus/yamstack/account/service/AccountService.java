@@ -4,7 +4,6 @@ import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.domain.repository.AccountRepository;
 import com.siksaurus.yamstack.yam.domain.Yam;
-import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
 import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
