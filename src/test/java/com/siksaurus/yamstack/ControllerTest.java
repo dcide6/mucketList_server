@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
+import com.siksaurus.yamstack.review.s3upload.S3Uploader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,9 @@ public class ControllerTest {
 
     @MockBean
     protected AccountService accountService;
+
+    @MockBean
+    protected S3Uploader s3Uploader;
 
     protected String makeJwtAuthToken(AccountRole role, Date expiredDate) {
         return jwtAuthTokenProvider.createAuthToken("test",role, expiredDate).getToken();

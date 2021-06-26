@@ -13,3 +13,12 @@ spring:
 #test를 위한 키
 jwt:
   base64-secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXNpa3NhdXJ1cy1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3Qtc2lrc2F1cnVzCg==
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      instanceProfile: true
