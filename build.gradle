@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.siksaurus'
-version = '0.0.8-SNAPSHOT'
+version = '0.0.10-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtime 'io.jsonwebtoken:jjwt-impl:0.11.2'

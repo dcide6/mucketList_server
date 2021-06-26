@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/docs/**").permitAll()
 
                 .antMatchers("/api/v1/account/**").hasAnyAuthority(AccountRole.USER.toString(), AccountRole.ADMIN.toString())
+                .antMatchers("/api/v1/review/**").hasAnyAuthority(AccountRole.USER.toString(), AccountRole.ADMIN.toString())
                 .anyRequest().authenticated()
 
                 .and()
