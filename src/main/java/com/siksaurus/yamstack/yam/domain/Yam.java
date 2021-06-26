@@ -1,11 +1,9 @@
 package com.siksaurus.yamstack.yam.domain;
 
-<<<<<<< HEAD
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-=======
 import com.fasterxml.jackson.annotation.JsonIgnore;
->>>>>>> YamStack/master
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.account.domain.Account;
