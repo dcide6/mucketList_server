@@ -36,11 +36,11 @@ public class Yam {
     @JoinColumn(name = "restr_id")
     private Restaurant restaurant;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "yam_food_table")
     private Set<Food> foods;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "yam_tag_table")
     private Set<Tag> tags;
 

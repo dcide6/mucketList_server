@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/yam")
@@ -18,7 +15,17 @@ public class YamController {
 
     private final YamService yamService;
 
-    @GetMapping("/{email}")
+    @GetMapping("/metaInfo/{email}")
+    public ResponseEntity<MetaInfo> getYamFilterInfo(@PathVariable String email) {
+
+        MetaInfo metaInfo = yamService.getYamListMetaInfo(email);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(metaInfo);
+    }
+
+    @PostMapping("/{email}")
     public ResponseEntity<Page<Yam>> getYamsByEmail(@PathVariable String email, YamPageRequest pageable) {
 
         Page<Yam> yams = yamService.getYamListByUserEmail(email, pageable.of());
