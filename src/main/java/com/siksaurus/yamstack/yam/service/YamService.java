@@ -50,8 +50,8 @@ public class YamService {
         Set<Tag> tags;
         Set<Food> foods;
         tags = tagService.saveTags(dto.getTags());
-
         foods = foodService.saveFoods(dto.getFoods());
+
         Yam yam = Yam.builder()
                 .genTime(LocalDate.now())
                 .account(account)

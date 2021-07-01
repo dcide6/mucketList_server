@@ -27,12 +27,12 @@ public class Yam {
     private LocalDate competeTime;  //완료 시간 (1.리뷰작성에서 방문날짜 선택, 2.별로얌 선택시
     private boolean isGood;         //true 재방문 의사 있음, false 재방문 의사 없음, 초기값 true
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restr_id")
     private Restaurant restaurant;
 

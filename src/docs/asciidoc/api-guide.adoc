@@ -137,3 +137,29 @@ include::{snippets}/create-restaurant/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/create-restaurant/http-response.adoc[leveloffset=+3]
+
+== 얌리스트
+
+=== 필터 및 달성률 정보를 위한 metaInfo 가져오기
+
+==== Request
+include::{snippets}/get-meta-info/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/get-meta-info/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/get-meta-info/http-response.adoc[leveloffset=+3]
+
+=== 얌리스트 가져오기
+
+NOTE: mode = 0:모두, 1:얌얌리스트, 2:완료얌리스트
+
+==== Request
+include::{snippets}/get-yam-list-test/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/get-yam-list-test/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/get-yam-list-test/http-response.adoc[leveloffset=+3]

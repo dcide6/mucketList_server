@@ -4,8 +4,15 @@ import com.siksaurus.yamstack.restaurant.controller.RestaurantDTO;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @Service
@@ -13,8 +20,23 @@ import java.util.List;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final EntityManager entityManager;
 
     public Restaurant saveRestaurant(Restaurant restaurant) {
+        if(restaurant.getX() != null && restaurant.getY() != null) {
+            Double latitude = Double.parseDouble(restaurant.getY());
+            Double longitude = Double.parseDouble(restaurant.getX());
+            String pointWKT = String.format("POINT(%s %s)", longitude, latitude);
+
+            // WKTReader를 통해 WKT를 실제 타입으로 변환
+            Point point = null;
+            try {
+                point = (Point) new WKTReader().read(pointWKT);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            restaurant.setPoint(point);
+        }
         return restaurantRepository.save(restaurant);
     }
 
@@ -24,6 +46,19 @@ public class RestaurantService {
 
     public List<Restaurant> getRestaurantByName(String name) {
         return restaurantRepository.findByName(name).get();
+    }
+
+    public List<Restaurant> getRestaurantAll(String x, String y) {
+//        Query query = entityManager.createNativeQuery(""+
+//                "SET @lon ="+x+";\n" +
+//                "SET @lat ="+y+";\n" +
+//                "SELECT *, ST_DISTANCE_SPHERE(POINT(@lon, @lat), point) AS dist\n" +
+//                "FROM restaurant\n" +
+//                "ORDER BY dist;");
+        Query query = entityManager.createNativeQuery("select *, ST_DISTANCE_SPHERE(POINT("+x+", "+y+"), point) AS dist from restaurant order by dist");
+
+        List<Restaurant> restaurants = query.getResultList();
+        return restaurants;
     }
 
     public Restaurant getRestaurantFromRequest(RestaurantDTO.createRestaurantDTO dto) {

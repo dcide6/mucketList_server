@@ -26,9 +26,9 @@ public class YamController {
     }
 
     @PostMapping("/{email}")
-    public ResponseEntity<Page<Yam>> getYamsByEmail(@PathVariable String email, YamPageRequest pageable) {
+    public ResponseEntity<Page<Yam>> getYamsByEmail(@PathVariable String email, @RequestBody YamDTO.filterYamInfo filter, YamPageRequest pageable) {
 
-        Page<Yam> yams = yamService.getYamListByUserEmail(email, pageable.of());
+        Page<Yam> yams = yamService.getYamListFilter(email, filter, pageable.of());
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)

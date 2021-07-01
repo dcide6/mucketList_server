@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.locationtech.jts.geom.Point;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -31,13 +32,14 @@ public class Restaurant {
     private String region3depth;
     private String x;
     private String y;
+    @Transient
+    private String dist;
+    @JsonIgnore
+    private Point point;
+
     private String category1depth;
     private String category2depth;
     private Integer closedCount;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "restaurant")
-    private Set<Yam> yams;
 
     @Builder
     public Restaurant(String apiId,
