@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.siksaurus.yamstack.yam.controller.YamDTO;
 import com.siksaurus.yamstack.yam.domain.Yam;
-import javafx.beans.binding.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
