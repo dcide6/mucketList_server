@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.yam.service;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.restaurant.controller.RestaurantDTO;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
+import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.yam.domain.Food;
 import com.siksaurus.yamstack.yam.domain.Tag;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -59,6 +60,7 @@ public class YamService {
         return this.saveYam(yam);
     }
 
+
     public List<Yam> getYamListByUserEmail(String email) {
         return yamRepository.findByAccount_Email(email);
     }
@@ -67,6 +69,9 @@ public class YamService {
         return yamRepository.findByAccount_Email(email, pageable);
     }
 
+    public Yam getYamById(Long id) {
+        return yamRepository.findById(id).get();
+    }
     public void deleteYam(Yam yam) {
         yamRepository.delete(yam);
     }

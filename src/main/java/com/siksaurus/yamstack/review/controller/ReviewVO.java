@@ -15,7 +15,6 @@ public class ReviewVO {
     private LocalDate visitTime;
     private String imagePath;
     private String comment;
-    private int likeNum;
     private boolean isShared;
     private Company company;
 
@@ -25,7 +24,6 @@ public class ReviewVO {
         this.visitTime = review.getVisitTime();
         this.imagePath = review.getImagePath();
         this.comment = review.getComment();
-        this.likeNum = review.getLikeNum();
         this.isShared = review.isShared();
         this.company = review.getCompany();
     }
