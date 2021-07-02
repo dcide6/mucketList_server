@@ -14,4 +14,6 @@ public interface YamRepository extends JpaRepository<Yam, Long> {
     List<Yam> findByAccount_Email(String email);
     @EntityGraph(attributePaths = {"account", "restaurant", "foods", "tags", "review"})
     Page<Yam> findByAccount_Email(String email, Pageable pageable);
+    @EntityGraph(attributePaths = {"account", "restaurant", "foods", "tags", "review"})
+    List<Yam> findByRestaurant_Id(Long id);
 }

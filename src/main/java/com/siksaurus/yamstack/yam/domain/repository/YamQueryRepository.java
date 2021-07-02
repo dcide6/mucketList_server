@@ -37,6 +37,8 @@ public class YamQueryRepository {
                 query.where(yam.competeTime.isNotNull());
                 query.where(yam.isGood.eq(true));
                 break;
+            case 3: //재방문 의사 없음
+                query.where(yam.isGood.eq(false));
         }
         if(dto.getTags() != null) {
             query.innerJoin(yam.tags, tag).where(tag.name.in(dto.getTags()));

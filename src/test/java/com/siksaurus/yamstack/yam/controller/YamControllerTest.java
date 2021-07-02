@@ -61,7 +61,7 @@ public class YamControllerTest extends ControllerTest {
         given(yamService.getYamListMetaInfo("test@aaa.bbb")).willReturn(metaInfo);
 
         //when
-        ResultActions result = mockMvc.perform(get("/api/v1/yam/metaInfo/test@aaa.bbb").headers(httpHeaders));
+        ResultActions result = mockMvc.perform(get("/api/v1/yam/metaInfo").headers(httpHeaders));
 
         //then
         result
@@ -129,7 +129,7 @@ public class YamControllerTest extends ControllerTest {
         given(this.yamService.getYamListFilter(any(), any(), any())).willReturn(yamList);
 
         //when
-        ResultActions result = mockMvc.perform(post("/api/v1/yam/test@aaa.bbb?page=0&size=10&direction=DESC")
+        ResultActions result = mockMvc.perform(post("/api/v1/yam?page=0&size=10&direction=DESC")
                 .headers(httpHeaders)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filter)));

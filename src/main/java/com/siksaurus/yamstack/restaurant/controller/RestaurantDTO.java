@@ -12,9 +12,6 @@ public class RestaurantDTO {
     @NoArgsConstructor
     @EqualsAndHashCode
     public static class createRestaurantDTO {
-        //Account info
-        private String email;
-
         //restaurant info
         private String id;
         private String place_name;
@@ -34,8 +31,7 @@ public class RestaurantDTO {
         private String memo;
 
         @Builder
-        public createRestaurantDTO(String email,
-                                   String id,
+        public createRestaurantDTO(String id,
                                    String place_name,
                                    String category_name,
                                    String category_group_code,
@@ -49,12 +45,10 @@ public class RestaurantDTO {
                                    Set<String> foods,
                                    Set<String> tags,
                                    String memo) {
-            Assert.notNull(email, "Email Not Null");
             Assert.notNull(place_name, "Place Name Not Null");
             Assert.notNull(category_name, "Category Name Not Null");
             Assert.notNull(address_name, "Address Not Null");
 
-            this.email = email;
             this.id = id;
             this.place_name = place_name;
             this.category_name = category_name;

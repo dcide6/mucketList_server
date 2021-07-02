@@ -153,7 +153,7 @@ include::{snippets}/get-meta-info/http-response.adoc[leveloffset=+3]
 
 === 얌리스트 가져오기
 
-NOTE: mode = 0:모두, 1:얌얌리스트, 2:완료얌리스트
+NOTE: mode = 0:모두, 1:얌얌리스트, 2:완료얌리스트, 3:재방문의사없음
 
 ==== Request
 include::{snippets}/get-yam-list-test/http-request.adoc[leveloffset=+3]
