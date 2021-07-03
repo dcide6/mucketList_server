@@ -9,8 +9,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -37,20 +35,21 @@ public class Review {
 
     private String imagePath;
     private String comment;
-    private int likeNum;
+//    private int likeNum;
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
+    private Set<ReviewLike> reviewLikes;
     private boolean isShared;
     private Company company;
 
     @Builder
-    public Review(Long id, Yam yam, LocalDate genTime, LocalDate visitTime, String imagePath,
-                  String comment, int likeNum, boolean isShared, Company company){
+    public Review(Long id, Yam yam, LocalDate visitTime, String imagePath,
+                  String comment, boolean isShared, Company company){
         this.id = id;
         this.yam = yam;
         this.genTime = LocalDate.now();
         this.visitTime = visitTime;
         this.imagePath = imagePath;
         this.comment = comment;
-        this.likeNum = likeNum;
         this.isShared = isShared;
         this.company = company;
     }

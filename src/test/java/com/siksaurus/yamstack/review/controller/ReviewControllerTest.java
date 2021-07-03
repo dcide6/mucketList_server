@@ -47,15 +47,14 @@ class ReviewControllerTest extends ControllerTest {
                 .id(id)
                 .comment("맛집임 추천!")
                 .company(Company.FRIEND)
-                .genTime(LocalDate.now())
                 .imagePath("")
                 .isShared(true)
-                .likeNum(1231)
                 .visitTime(LocalDate.now())
                 .yam(new Yam())
                 .build();
 
-        given(reviewService.getReviewById(id)).willReturn(review);
+        ReviewVO reviewVO = new ReviewVO(review);
+        given(reviewService.getReviewById(id)).willReturn(reviewVO);
 
 
         //when
@@ -74,7 +73,6 @@ class ReviewControllerTest extends ControllerTest {
         ReviewDTO.CreateReviewDTO dto = new ReviewDTO.CreateReviewDTO();
         dto.setComment("맛집임 추천");
         dto.setCompany(Company.FRIEND);
-        dto.setGenTime(LocalDate.now());
         dto.setImagePath("");
         dto.setShared(true);
 
@@ -91,7 +89,7 @@ class ReviewControllerTest extends ControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
 
-        given(reviewService.createReview(dto)).willReturn(8l);
+        given(reviewService.createReview(dto, image)).willReturn(8l);
 
 
         //when

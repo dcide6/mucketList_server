@@ -23,23 +23,18 @@ public class ReviewDTO {
         @NotNull
         private Long id;
         private Yam yam;
-        private LocalDate genTime;
         private LocalDate visitTime;
         private String imagePath;
         private String comment;
-        private int likeNum;
         private boolean isShared;
         private Company company;
 
         public Review toEntity() {
             Review review = Review.builder()
-                    .id(id)
                     .yam(yam)
-                    .genTime(genTime)
                     .visitTime(visitTime)
                     .imagePath(imagePath)
                     .comment(comment)
-                    .likeNum(likeNum)
                     .isShared(isShared)
                     .company(company)
                     .build();

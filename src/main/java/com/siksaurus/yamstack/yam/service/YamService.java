@@ -63,6 +63,7 @@ public class YamService {
         return this.saveYam(yam);
     }
 
+
     public List<Yam> getYamListByUserEmail(String email) {
         return yamRepository.findByAccount_Email(email);
     }
@@ -73,6 +74,10 @@ public class YamService {
 
     public Page<Yam> getYamListFilter(String email, YamDTO.filterYamInfo info, Pageable pageable) {
         return yamQueryRepository.findDynamicQuery(email, info, pageable);
+    }
+
+    public Yam getYamById(Long id) {
+        return yamRepository.findById(id).get();
     }
 
     public void deleteYam(Yam yam) {
