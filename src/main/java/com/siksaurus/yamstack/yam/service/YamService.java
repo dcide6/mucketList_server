@@ -3,7 +3,6 @@ package com.siksaurus.yamstack.yam.service;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.restaurant.controller.RestaurantDTO;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
-
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.yam.controller.MetaInfo;
 import com.siksaurus.yamstack.yam.controller.YamDTO;
@@ -77,7 +76,6 @@ public class YamService {
     public Yam getYamById(Long id) {
         return yamRepository.findById(id).get();
     }
-
     public Page<Yam> getYamListFilter(String email, YamDTO.filterYamInfo info, Pageable pageable) {
         return yamQueryRepository.findDynamicQuery(email, info, pageable);
     }
