@@ -76,6 +76,10 @@ public class YamService {
         return yamQueryRepository.findDynamicQuery(email, info, pageable);
     }
 
+    public Yam getYamById(Long id) {
+        return yamRepository.findById(id).get();
+    }
+
     public void deleteYam(Yam yam) {
         yamRepository.delete(yam);
     }
