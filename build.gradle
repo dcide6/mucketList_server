@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.siksaurus'
-version = '0.0.10-SNAPSHOT'
+version = '0.0.14-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -50,6 +50,7 @@ dependencies {
     runtime 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     compileOnly 'org.projectlombok:lombok'
+    compile group: 'org.hibernate', name: 'hibernate-spatial', version: '5.4.4.Final'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'

@@ -50,7 +50,7 @@ public class ControllerTest {
     protected S3Uploader s3Uploader;
 
     protected String makeJwtAuthToken(AccountRole role, Date expiredDate) {
-        return jwtAuthTokenProvider.createAuthToken("test",role, expiredDate).getToken();
+        return jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, expiredDate).getToken();
     }
 
 

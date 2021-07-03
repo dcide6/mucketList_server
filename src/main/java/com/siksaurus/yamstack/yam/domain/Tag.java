@@ -2,10 +2,7 @@ package com.siksaurus.yamstack.yam.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.jsonwebtoken.lang.Assert;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +12,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Tag {
 
     @Id

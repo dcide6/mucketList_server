@@ -74,7 +74,6 @@ public class RestaurantControllerTest extends ControllerTest {
                 .build();
 
         RestaurantDTO.createRestaurantDTO dto = RestaurantDTO.createRestaurantDTO.builder()
-                .email("test@aaa.bbb")
                 .id("123456")
                 .place_name("얌스택 식당")
                 .address_name("서울 동작구 상도동 123-123")

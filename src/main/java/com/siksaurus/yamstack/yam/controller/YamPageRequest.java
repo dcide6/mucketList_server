@@ -7,6 +7,12 @@ public final class YamPageRequest {
     private int size;
     private Sort.Direction direction;
 
+    public YamPageRequest() {
+        this.page = 0;
+        this.size = 10;
+        this.direction = Sort.Direction.DESC;
+    }
+
     public void setPage(int page) {
         this.page = page <= 0 ? 0 : page;
     }
@@ -18,7 +24,7 @@ public final class YamPageRequest {
     }
 
     public void setDirection(Sort.Direction direction) {
-        this.direction = direction == null ? Sort.Direction.DESC : direction;
+        this.direction = direction;
     }
 
     // getter

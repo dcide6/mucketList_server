@@ -26,7 +26,7 @@ public class LoginService {
     private final AccountService accountService;
     private final JavaMailSender mailSender;
 
-    private final static long LOGIN_RETENTION_MINUTES = 60 * 24;
+    private final static long LOGIN_RETENTION_MINUTES = 60 * 12;
 
     public Optional<Account> login(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
