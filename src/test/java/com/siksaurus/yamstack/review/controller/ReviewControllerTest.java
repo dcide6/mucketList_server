@@ -53,7 +53,8 @@ class ReviewControllerTest extends ControllerTest {
                 .yam(new Yam())
                 .build();
 
-        given(reviewService.getReviewById(id)).willReturn(review);
+        ReviewVO reviewVO = new ReviewVO(review);
+        given(reviewService.getReviewById(id)).willReturn(reviewVO);
 
 
         //when

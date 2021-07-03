@@ -2,6 +2,9 @@ package com.siksaurus.yamstack.review.service;
 
 
 import com.fasterxml.jackson.databind.util.ArrayBuilders;
+import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.domain.repository.AccountRepository;
+import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.review.controller.ReviewDTO;
 import com.siksaurus.yamstack.review.controller.ReviewVO;
 import com.siksaurus.yamstack.review.domain.Review;
@@ -27,8 +30,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final S3Uploader s3Uploader;
+    private final AccountRepository accountRepository;
     private final YamService yamService;
+    private final S3Uploader s3Uploader;
 
     /* 여기얌 - 리뷰 리스트 조회*/
     public Page<Review> getReviewList(Pageable pageable) {
@@ -36,8 +40,14 @@ public class ReviewService {
     }
 
     /* 얌/여기얌 - 리뷰 상세 조회*/
-    public Review getReviewById(Long id) {
-        return reviewRepository.findById(id).get();
+    public ReviewVO getReviewById(Long id) {
+        Review review = reviewRepository.findById(id).get();
+        ReviewVO reviewVO = new ReviewVO(review);
+        Yam yam = yamService.getYamById(review.getYam().getId());
+        Account account = accountRepository.findById(yam.getAccount().getId()).get();
+        reviewVO.setYamId(yam);
+        reviewVO.setAccount(account);
+        return reviewVO;
     }
 
     /* 얌 - 리뷰 등록*/

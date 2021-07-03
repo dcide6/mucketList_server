@@ -40,11 +40,11 @@ public class ReviewController {
 
     /* 얌/여기얌 - 리뷰 상세 조회*/
     @GetMapping("/{review_id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable("review_id")  Long review_id) {
-        Review review = reviewService.getReviewById(review_id);
+    public ResponseEntity<ReviewVO> getReviewById(@PathVariable("review_id")  Long review_id) {
+        ReviewVO reviewVO = reviewService.getReviewById(review_id);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(review);
+                .body(reviewVO);
     }
 
     /* 얌 - 리뷰 등록*/

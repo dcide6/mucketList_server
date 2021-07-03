@@ -31,7 +31,6 @@ public class ReviewDTO {
 
         public Review toEntity() {
             Review review = Review.builder()
-                    .id(id)
                     .yam(yam)
                     .visitTime(visitTime)
                     .imagePath(imagePath)
