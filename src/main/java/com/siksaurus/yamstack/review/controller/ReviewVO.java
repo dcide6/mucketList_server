@@ -3,10 +3,14 @@ package com.siksaurus.yamstack.review.controller;
 import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.Review;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class ReviewVO {
     private Long id;
     private LocalDate visitTime;

@@ -10,6 +10,8 @@ import com.siksaurus.yamstack.restaurant.service.RestaurantVO;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,10 +44,20 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantVO> getRestaurantDetail(@PathVariable Long id) {
-        RestaurantVO vo = restaurantService.getRestaurantVO(id);
+        RestaurantVO vo = restaurantService.getRestaurantVO(id, null, null);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(vo);
+    }
+
+    // mode: "near", "want", "recommend", "done" : "여기 가까워", "여기 갈래", "여기 강추", "여기 가봤어"
+    @PostMapping("/list")
+    public ResponseEntity<Page<RestaurantVO>> getRestaurantList(@RequestBody RestaurantDTO.selectRestaurantDTO dto, RestaurantPageRequest pageable) {
+        Page<RestaurantVO> restaurantVOS = restaurantService.getRestaurantVOList(dto.getMode(), dto.getX(), dto.getY(), pageable.of());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(restaurantVOS);
     }
 }

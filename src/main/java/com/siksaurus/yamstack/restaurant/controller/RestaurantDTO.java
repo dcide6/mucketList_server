@@ -67,5 +67,12 @@ public class RestaurantDTO {
 
     }
 
-
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class selectRestaurantDTO {
+        private String mode;
+        private String x;
+        private String y;
+    }
 }

@@ -1,7 +1,6 @@
 package com.siksaurus.yamstack.restaurant.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,6 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -30,10 +28,8 @@ public class Restaurant {
     private String region1depth;
     private String region2depth;
     private String region3depth;
-    private String x;
-    private String y;
-    @Transient
-    private String dist;
+    private String x; // 경도 (longitude)
+    private String y; // 위도 (latitude)
     @JsonIgnore
     private Point point;
 
