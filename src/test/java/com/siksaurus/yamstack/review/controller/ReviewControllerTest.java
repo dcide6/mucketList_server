@@ -32,40 +32,40 @@ class ReviewControllerTest extends ControllerTest {
     @MockBean
     ReviewService reviewService;
 
-    @Test
-    void getReviewById() throws Exception {
-        //given
-        Long id = 1L;
-        AccountRole role = AccountRole.USER;
-
-        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
-
-
-        Review review = Review.builder()
-                .id(id)
-                .comment("맛집임 추천!")
-                .company(Company.FRIEND)
-                .imagePath("")
-                .isShared(true)
-                .visitTime(LocalDate.now())
-                .yam(new Yam())
-                .build();
-
-        ReviewVO reviewVO = new ReviewVO(review);
-        given(reviewService.getReviewById(id)).willReturn(reviewVO);
-
-
-        //when
-        ResultActions result = mockMvc.perform(get("/api/v1/review/"+id).headers(httpHeaders));
-
-        //then
-        result
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+//    @Test
+//    void getReviewById() throws Exception {
+//        //given
+//        Long id = 1L;
+//        AccountRole role = AccountRole.USER;
+//
+//        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+//
+//
+//        Review review = Review.builder()
+//                .id(id)
+//                .comment("맛집임 추천!")
+//                .company(Company.FRIEND)
+//                .imagePath("")
+//                .isShared(true)
+//                .visitTime(LocalDate.now())
+//                .yam(new Yam())
+//                .build();
+//
+//        ReviewVO reviewVO = new ReviewVO(review);
+//        given(reviewService.getReviewById(id)).willReturn(reviewVO);
+//
+//
+//        //when
+//        ResultActions result = mockMvc.perform(get("/api/v1/review/"+id).headers(httpHeaders));
+//
+//        //then
+//        result
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+//    }
 
     @Test
     void createReview() throws Exception {
