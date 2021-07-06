@@ -43,10 +43,10 @@ public class ReviewService {
     public ReviewVO getReviewById(Long id) {
         Review review = reviewRepository.findById(id).get();
         ReviewVO reviewVO = new ReviewVO(review);
-        Yam yam = yamService.getYamById(review.getYam().getId());
-        Account account = accountRepository.findById(yam.getAccount().getId()).get();
-        reviewVO.setYamId(yam);
-        reviewVO.setAccount(account);
+//        Yam yam = yamService.getYamById(review.getYam().getId());
+//        Account account = accountRepository.findById(yam.getAccount().getId()).get();
+//        reviewVO.setYamId(yam);
+//        reviewVO.setAccount(account);
         return reviewVO;
     }
 

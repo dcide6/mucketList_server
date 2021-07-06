@@ -1,11 +1,8 @@
 package com.siksaurus.yamstack.review.controller;
 
-import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.Review;
-import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Getter;
-import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -18,9 +15,10 @@ public class ReviewVO {
     private String comment;
     private boolean isShared;
     private Company company;
+    private int likeCount;
 
-    private Account account;
-    private Long yamId;
+    private String nickName;
+    private String restaurantName;
 
     public ReviewVO(Review review) {
         this.id = review.getId();
@@ -30,12 +28,9 @@ public class ReviewVO {
         this.comment = review.getComment();
         this.isShared = review.isShared();
         this.company = review.getCompany();
-    }
-    public void setYamId(Yam yam) {
-        this.yamId = yam.getId();
-    }
-    public void setAccount(Account account) {
-        this.account = account;
+        this.likeCount = review.getReviewLikes() != null ? review.getReviewLikes().size() : 0;
+        this.nickName = review.getYam().getAccount().getName();
+        this.restaurantName = review.getYam().getRestaurant().getName();
     }
 
 }
