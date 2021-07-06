@@ -137,9 +137,9 @@ public class LoginController {
     }
 
     @PostMapping("/authCode")
-    public ResponseEntity<CommonResponse> authCodeResend(@RequestBody AccountDTO.UpdateAccountDTO dto) {
+    public ResponseEntity<CommonResponse> authCodeResend(@RequestBody AccountDTO.resendAuthCodeDTO dto) {
         Account account = accountService.getAccountByEmail(dto.getEmail());
-        String authCode = loginService.authMailSend(dto.getEmail(), dto.getName());
+        String authCode = loginService.authMailSend(dto.getEmail(), account.getName());
         account.setAuthCode(authCode);
         account.setEmailChecked(false);
         accountService.saveAccount(account);

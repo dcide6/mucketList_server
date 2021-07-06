@@ -160,10 +160,8 @@ public class LoginControllerTest extends ControllerTest {
     public void authCodeResend() throws Exception {
 
         //given
-        AccountDTO.UpdateAccountDTO dto = new AccountDTO.UpdateAccountDTO();
+        AccountDTO.resendAuthCodeDTO dto = new AccountDTO.resendAuthCodeDTO();
         dto.setEmail("test@aaa.bbb");
-        dto.setName("test");
-        dto.setPassword("1234");
 
         Account account = Account.builder()
                 .email("test@aaa.bbb")
@@ -173,7 +171,7 @@ public class LoginControllerTest extends ControllerTest {
                 .build();
 
         given(accountService.getAccountByEmail(dto.getEmail())).willReturn(account);
-        given(loginService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
+        given(loginService.authMailSend(dto.getEmail(), account.getName())).willReturn("123456");
 
         //when
         ResultActions result = mockMvc.perform(post("/login/authCode")

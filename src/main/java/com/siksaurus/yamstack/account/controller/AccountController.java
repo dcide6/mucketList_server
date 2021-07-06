@@ -3,6 +3,8 @@ package com.siksaurus.yamstack.account.controller;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.global.CommonResponse;
+import com.siksaurus.yamstack.global.security.JwtAuthToken;
+import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,9 +17,13 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountService accountService;
+    private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
-    @GetMapping("/{email}")
-    public ResponseEntity<Account> getAccountByEmail(@PathVariable String email) {
+    @GetMapping
+    public ResponseEntity<Account> getAccountByEmail(@RequestHeader(value = "x-auth-token") String token) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
 
         Account account = accountService.getAccountByEmail(email);
 
@@ -26,8 +32,34 @@ public class AccountController {
                 .body(account);
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<CommonResponse> deleteAccountByEmail(@PathVariable String email) {
+    @PutMapping
+    public ResponseEntity<Account> updateAccountByEmail(@RequestHeader(value = "x-auth-token") String token,
+                                                        @RequestBody AccountDTO.UpdateAccountDTO dto) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
+        Account account_rst = null;
+        if(dto.getNewPassword() != null) {
+            account_rst = accountService.changePassword(email, dto.getNewPassword());
+        }
+        if(dto.getNewName() != null) {
+            Account account = accountService.getAccountByEmail(email);
+            account.setName(dto.getNewName());
+            account_rst = accountService.saveAccount(account);
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(account_rst);
+
+    }
+
+    @DeleteMapping
+    public ResponseEntity<CommonResponse> deleteAccountByEmail(@RequestHeader(value = "x-auth-token") String token) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
 
         accountService.deleteAccountByEmail(email);
         CommonResponse response = CommonResponse.builder()

@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +43,7 @@ public class AccountService implements UserDetailsService {
     public Account changePassword(String email, String password) {
         Account account = this.getAccountByEmail(email);
         account.setPassword(passwordEncoder.encode(password));
+        account.setPwChangedDate(LocalDateTime.now());
         return accountRepository.save(account);
     }
 

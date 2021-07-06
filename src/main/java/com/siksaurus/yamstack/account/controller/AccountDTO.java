@@ -55,13 +55,17 @@ public class AccountDTO {
     @NoArgsConstructor
     public static class UpdateAccountDTO {
 
-        @NotNull
-        @Email
+        private String newPassword;
+
+        private String newName;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class resendAuthCodeDTO {
+
         private String email;
-
-        private String password;
-
-        private String name;
     }
 
     @Getter
