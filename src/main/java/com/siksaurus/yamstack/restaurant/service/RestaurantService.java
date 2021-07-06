@@ -7,6 +7,7 @@ import com.siksaurus.yamstack.restaurant.domain.repository.RestaurantRepository;
 import com.siksaurus.yamstack.review.controller.ReviewVO;
 import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.Review;
+import com.siksaurus.yamstack.review.service.ReviewService;
 import com.siksaurus.yamstack.yam.domain.Food;
 import com.siksaurus.yamstack.yam.domain.Tag;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -34,6 +35,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final YamService yamService;
+    private final ReviewService reviewService;
     private final EntityManager entityManager;
 
     public Restaurant saveRestaurant(Restaurant restaurant) {
@@ -157,7 +159,7 @@ public class RestaurantService {
 
         List<Yam> subList = yamList.size() > size ? yamList.subList(0, size - 1) : yamList;
         for (Yam yam : subList) {
-            ReviewVO vo = new ReviewVO(yam.getReview());
+            ReviewVO vo = reviewService.getReviewById(yam.getReview().getId(), yam.getAccount().getEmail());
             rst.add(vo);
         }
         return rst;
