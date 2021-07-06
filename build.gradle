@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.siksaurus'
-version = '0.0.14-SNAPSHOT'
+version = '0.0.15-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
