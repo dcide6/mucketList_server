@@ -2,10 +2,13 @@ package com.siksaurus.yamstack.review.controller;
 
 import com.siksaurus.yamstack.account.controller.AccountDTO;
 import com.siksaurus.yamstack.global.CommonResponse;
+import com.siksaurus.yamstack.global.security.JwtAuthToken;
+import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
 import com.siksaurus.yamstack.review.s3upload.S3Uploader;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.review.service.LikeService;
 import com.siksaurus.yamstack.review.service.ReviewService;
+import com.siksaurus.yamstack.yam.controller.YamPageRequest;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,11 +31,17 @@ public class ReviewController {
 
     private final ReviewService reviewService;
     private final LikeService likeService;
+    private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
-
+    /* 리뷰리스트 조회 */
     @GetMapping("/list")
-    public ResponseEntity<Page<Review>> list(final Pageable pageable) {
-        Page<Review> reviews = reviewService.getReviewList(pageable);
+    public ResponseEntity<Page<ReviewVO>> list(@RequestHeader(value = "x-auth-token") String token,
+                                               ReviewPageRequest pageable) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
+        Page<ReviewVO> reviews = reviewService.getReviewList(pageable.of(), email);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(reviews);
@@ -40,11 +49,15 @@ public class ReviewController {
 
     /* 얌/여기얌 - 리뷰 상세 조회*/
     @GetMapping("/{review_id}")
-    public ResponseEntity<ReviewVO> getReviewById(@PathVariable("review_id")  Long review_id) {
-        ReviewVO reviewVO = reviewService.getReviewById(review_id);
+    public ResponseEntity<ReviewVO> getReviewById(@RequestHeader(value = "x-auth-token") String token,
+                                                  @PathVariable("review_id")  Long review_id) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+        ReviewVO review = reviewService.getReviewById(review_id, email);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(reviewVO);
+                .body(review);
     }
 
     /* 얌 - 리뷰 등록*/

@@ -173,6 +173,7 @@ public class LoginControllerTest extends ControllerTest {
         given(accountService.getAccountByEmail(dto.getEmail())).willReturn(account);
         given(loginService.authMailSend(dto.getEmail(), account.getName())).willReturn("123456");
 
+
         //when
         ResultActions result = mockMvc.perform(post("/login/authCode")
                 .contentType(MediaType.APPLICATION_JSON)
