@@ -18,4 +18,5 @@ public class MetaInfo {
     private int yamSize;
     private int completeSize;
     private int noRevisitSize;
+    private int reviewSize;
 }

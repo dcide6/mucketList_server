@@ -72,8 +72,24 @@ public class YamService {
         return yamRepository.findByAccount_Email(email, pageable);
     }
 
+    public List<Yam> getYamListByRestaurantId(Long id) {
+        return yamRepository.findByRestaurant_Id(id);
+    }
+
     public Page<Yam> getYamListFilter(String email, YamDTO.filterYamInfo info, Pageable pageable) {
         return yamQueryRepository.findDynamicQuery(email, info, pageable);
+    }
+
+    public List<Yam> getYamListBetweenGenTime(LocalDate from, LocalDate to) {
+        return yamQueryRepository.findBetweenGenTime(from,to);
+    }
+
+    public List<Yam> getYamListBetweenCompleteTime(LocalDate from, LocalDate to) {
+        return yamQueryRepository.findBetweenCompleteTime(from,to);
+    }
+
+    public List<Yam> getYamListBetweenCompletTimeAndNotGood(LocalDate from, LocalDate to) {
+        return yamQueryRepository.findBetweenCompleteTimeAndNotGood(from,to);
     }
 
     public Yam getYamById(Long id) {
@@ -95,6 +111,7 @@ public class YamService {
             int yamSize = 0;
             int completeSize = 0;
             int noRevisitSize = 0;
+            int reviewSize = 0;
             for(Yam yam : yams) {
                 //달성률 data
                 if(yam.getCompeteTime() == null) yamSize++;
@@ -117,6 +134,8 @@ public class YamService {
                 }
                 categories.add(category);
                 yam.getTags().forEach(tag -> tagList.add(tag.getName()));
+
+                if(yam.getReview() != null) reviewSize++;
             };
             //빈도순정렬
             tagList.sort(Comparator.comparing(tagList.stream().collect(Collectors.groupingBy(x -> x, Collectors.counting()))::get).reversed());
@@ -128,6 +147,7 @@ public class YamService {
             metaInfo.setYamSize(yamSize);
             metaInfo.setCompleteSize(completeSize);
             metaInfo.setNoRevisitSize(noRevisitSize);
+            metaInfo.setReviewSize(reviewSize);
         }
         return metaInfo;
     }

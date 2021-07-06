@@ -11,6 +11,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import static com.siksaurus.yamstack.yam.domain.QYam.yam;
 import static com.siksaurus.yamstack.yam.domain.QTag.tag;
 
@@ -39,6 +42,7 @@ public class YamQueryRepository {
                 break;
             case 3: //재방문 의사 없음
                 query.where(yam.isGood.eq(false));
+                break;
         }
         if(dto.getTags() != null) {
             query.innerJoin(yam.tags, tag).where(tag.name.in(dto.getTags()));
@@ -52,4 +56,28 @@ public class YamQueryRepository {
         return new PageImpl<>(result.getResults(), pageable, result.getTotal());
     }
 
+    public List<Yam> findBetweenGenTime(LocalDate from, LocalDate to) {
+        JPAQuery query = this.queryFactory.selectFrom(yam);
+
+        query.where(yam.genTime.between(from,to));
+        QueryResults result = query.fetchResults();
+        return result.getResults();
+    }
+
+    public List<Yam> findBetweenCompleteTime(LocalDate from, LocalDate to) {
+        JPAQuery query = this.queryFactory.selectFrom(yam);
+
+        query.where(yam.competeTime.between(from,to));
+        query.where(yam.isGood.eq(true));
+        QueryResults result = query.fetchResults();
+        return result.getResults();
+    }
+
+    public List<Yam> findBetweenCompleteTimeAndNotGood(LocalDate from, LocalDate to) {
+        JPAQuery query = this.queryFactory.selectFrom(yam);
+
+        query.where(yam.competeTime.between(from,to));
+        QueryResults result = query.fetchResults();
+        return result.getResults();
+    }
 }
