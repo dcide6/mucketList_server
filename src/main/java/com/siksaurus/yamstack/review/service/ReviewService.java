@@ -17,13 +17,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final AccountRepository accountRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final YamService yamService;
     private final S3Uploader s3Uploader;
@@ -46,5 +49,21 @@ public class ReviewService {
         Yam yam = yamService.getYamById(dto.getYam().getId());
         dto.setYam(yam);
         return reviewRepository.save(dto.toEntity()).getId();
+    }
+
+    /* 얌 - 리뷰 삭제*/
+    @Transactional
+    public String deleteReview(Long review_id, String email) {
+        Account account = accountRepository.findByEmail(email).get();
+        Optional<Review> review = reviewRepository.findById(review_id);
+        if (!review.isPresent()){
+            return "Bad request: The review does not exist.";
+        }
+        if (account == review.get().getYam().getAccount()) {
+            reviewRepository.deleteById(review_id);
+            return "Review [ " + review_id + " ] has been deleted.";
+        }else{
+            return "Bad request: Only reviewers can delete reviews.";
+        }
     }
 }

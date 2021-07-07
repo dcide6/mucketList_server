@@ -214,3 +214,39 @@ include::{snippets}/get-yam-list-test/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/get-yam-list-test/http-response.adoc[leveloffset=+3]
+
+
+== 리뷰
+
+=== 리뷰 등록하기
+
+==== Request
+include::{snippets}/create-review/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/create-review/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/create-review/http-response.adoc[leveloffset=+3]
+
+=== 리뷰 조회하기
+
+==== Request
+include::{snippets}/get-review-by-id/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/get-review-by-id/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/get-review-by-id/http-response.adoc[leveloffset=+3]
+
+=== 리뷰 삭제하기
+
+==== Request
+include::{snippets}/delete-review/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/delete-review/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/delete-review/http-response.adoc[leveloffset=+3]
