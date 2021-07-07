@@ -78,10 +78,22 @@ public class ReviewController {
                 .body(response);
     }
 
+    /* 얌 - 리뷰 삭제*/
+    @PostMapping("/delete")
+    public String deleteReview(@RequestHeader(value = "x-auth-token") String token,
+                               @RequestBody Map<String, Long> params) {
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        Long review_id = params.get("review_id");
+        String email = (String) jwtAuthToken.getData().get("sub");
+        return reviewService.deleteReview(review_id, email);
+    }
     /* 얌 - 좋아요*/
     @PostMapping("/like")
-    public ResponseEntity<String> updateReviewLike(@RequestBody Map<String, String> params) {
-        String user_mail = params.get("user_mail");
+    public ResponseEntity<String> updateReviewLike(@RequestHeader(value = "x-auth-token") String token,
+                                                   @RequestBody Map<String, String> params) {
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String user_mail = (String) jwtAuthToken.getData().get("sub");
+
         Long review_id = Long.parseLong(params.get("review_id"));
         Long result = -1L;
         if (user_mail != null){

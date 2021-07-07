@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.review.controller;
 import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.yam.domain.Yam;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,16 @@ public class ReviewDTO {
                     .company(company)
                     .build();
             return review;
+        }
+
+        @Builder
+        public CreateReviewDTO(Yam yam, LocalDate visitTime,
+                               String comment, boolean isShared, Company company){
+            this.yam = yam;
+            this.visitTime = visitTime;
+            this.comment = comment;
+            this.isShared = isShared;
+            this.company = company;
         }
     }
 }
