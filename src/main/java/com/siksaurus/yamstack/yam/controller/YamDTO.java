@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 public class YamDTO {
 
@@ -20,5 +21,28 @@ public class YamDTO {
         public filterYamInfo() {
             this.mode = 0; //기본값
         }
+    }
+
+    @Getter
+    @Setter
+    public static class updateYam {
+        private long id;
+        private Set<String> foods;
+        private Set<String> tags;
+        private String memo;
+    }
+
+    @Getter
+    @Setter
+    public static class updateYamVisit {
+        private long id;
+        private boolean reVisit;
+    }
+
+    @Getter
+    @Setter
+    public static class deleteYam {
+        private long id;
+        private boolean isClosed;
     }
 }

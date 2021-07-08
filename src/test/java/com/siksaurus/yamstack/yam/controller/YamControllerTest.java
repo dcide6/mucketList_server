@@ -4,6 +4,7 @@ import com.siksaurus.yamstack.ControllerTest;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
+import com.siksaurus.yamstack.restaurant.service.RestaurantService;
 import com.siksaurus.yamstack.yam.domain.Food;
 import com.siksaurus.yamstack.yam.domain.Tag;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -25,8 +26,7 @@ import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +35,9 @@ public class YamControllerTest extends ControllerTest {
 
     @MockBean
     YamService yamService;
+
+    @MockBean
+    RestaurantService restaurantService;
 
     @Test
     public void getMetaInfo() throws Exception {
@@ -133,6 +136,228 @@ public class YamControllerTest extends ControllerTest {
                 .headers(httpHeaders)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(filter)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void saveYamFromRestaurantTest() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(456);
+
+        Yam yam = Yam.builder()
+                .genTime(LocalDate.now())
+                .account(account)
+                .restaurant(restaurant)
+                .build();
+        yam.setId(123);
+
+        given(this.restaurantService.getRestaurantById(456)).willReturn(restaurant);
+        given(this.yamService.saveYamFromRestaurant(any(), any())).willReturn(yam);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/v1/yam/restaurant/456").headers(httpHeaders));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void updateYamTest() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        YamDTO.updateYam dto = new YamDTO.updateYam();
+        dto.setId(123);
+        dto.setMemo("얌 수정");
+        dto.setTags(new HashSet<>(Arrays.asList("수정태그", "추가태그")));
+        dto.setFoods(new HashSet<>(Arrays.asList("추가음식")));
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(456);
+
+        Yam yam = Yam.builder()
+                .genTime(LocalDate.now())
+                .account(account)
+                .restaurant(restaurant)
+                .build();
+        yam.setId(123);
+        yam.setTags(new HashSet<>(Arrays.asList(Tag.builder().name("수정태그").build(), Tag.builder().name("추가태그").build())));
+        yam.setFoods(new HashSet<>(Arrays.asList(Food.builder().name("추가음식").build())));
+        yam.setMemo("얌 수정");
+
+        given(this.yamService.updateYamFromRequest(any())).willReturn(yam);
+
+        //when
+        ResultActions result = mockMvc.perform(put("/api/v1/yam")
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)));
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void updateYamVisitTest() throws Exception {
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        YamDTO.updateYamVisit dto = new YamDTO.updateYamVisit();
+        dto.setId(123);
+        dto.setReVisit(true);
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(456);
+
+        Yam yam = Yam.builder()
+                .genTime(LocalDate.now())
+                .account(account)
+                .restaurant(restaurant)
+                .build();
+        yam.setId(123);
+        yam.setGood(true);
+
+        given(this.yamService.updateYamVisitFromRequest(any())).willReturn(yam);
+
+        //when
+        ResultActions result = mockMvc.perform(put("/api/v1/yam/visit")
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)));
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void deleteYamTest() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(456);
+
+        Yam yam = Yam.builder()
+                .genTime(LocalDate.now())
+                .account(account)
+                .restaurant(restaurant)
+                .build();
+        yam.setId(123);
+
+        given(this.yamService.getYamById(any())).willReturn(yam);
+
+        //when
+        ResultActions result = mockMvc.perform(delete("/api/v1/yam/123?isClosed=false").headers(httpHeaders));
 
         //then
         result

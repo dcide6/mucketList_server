@@ -1,8 +1,10 @@
 package com.siksaurus.yamstack.yam.service;
 
 import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.restaurant.controller.RestaurantDTO;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
+import com.siksaurus.yamstack.restaurant.service.RestaurantService;
 import com.siksaurus.yamstack.yam.controller.MetaInfo;
 import com.siksaurus.yamstack.yam.controller.YamDTO;
 import com.siksaurus.yamstack.yam.domain.Food;
@@ -63,6 +65,41 @@ public class YamService {
         return this.saveYam(yam);
     }
 
+    public Yam saveYamFromRestaurant(Account account, Restaurant restaurant) {
+
+        Yam yam = Yam.builder()
+                .genTime(LocalDate.now())
+                .account(account)
+                .restaurant(restaurant)
+                .build();
+
+        return this.saveYam(yam);
+    }
+
+    @Transactional
+    public Yam updateYamFromRequest(YamDTO.updateYam dto) {
+        Yam yam = this.getYamById(dto.getId());
+        if (dto.getTags() != null) {
+            Set<Tag> tags = tagService.saveTags(dto.getTags());
+            yam.setTags(tags);
+        }
+        if (dto.getFoods() != null) {
+            Set<Food> foods = foodService.saveFoods(dto.getFoods());
+            yam.setFoods(foods);
+        }
+        if (dto.getMemo() != null) yam.setMemo(dto.getMemo());
+
+        return this.saveYam(yam);
+    }
+
+    public Yam updateYamVisitFromRequest(YamDTO.updateYamVisit dto) {
+        Yam yam = this.getYamById(dto.getId());
+        yam.setCompeteTime(LocalDate.now());
+        if(dto.isReVisit()) yam.setGood(true);
+        else yam.setGood(false);
+
+        return this.saveYam(yam);
+    }
 
     public List<Yam> getYamListByUserEmail(String email) {
         return yamRepository.findByAccount_Email(email);
