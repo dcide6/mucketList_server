@@ -215,6 +215,51 @@ include::{snippets}/get-yam-list-test/curl-request.adoc[leveloffset=+3]
 ==== Response
 include::{snippets}/get-yam-list-test/http-response.adoc[leveloffset=+3]
 
+=== 식당 정보에서 내 얌으로 가져오기
+
+==== Request
+include::{snippets}/save-yam-from-restaurant-test/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/save-yam-from-restaurant-test/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/save-yam-from-restaurant-test/http-response.adoc[leveloffset=+3]
+
+=== 얌 수정하기
+
+==== Request
+include::{snippets}/update-yam-test/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/update-yam-test/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/update-yam-test/http-response.adoc[leveloffset=+3]
+
+=== 얌 완료 (후기작성 안함)
+
+==== Request
+include::{snippets}/update-yam-visit-test/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/update-yam-visit-test/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/update-yam-visit-test/http-response.adoc[leveloffset=+3]
+
+=== 얌 삭제
+
+NOTE: isClosed = true : 폐업  false : 재방문 의사 없음
+
+==== Request
+include::{snippets}/delete-yam-test/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/delete-yam-test/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/delete-yam-test/http-response.adoc[leveloffset=+3]
 
 == 리뷰
 
