@@ -35,7 +35,7 @@ public class Restaurant {
 
     private String category1depth;
     private String category2depth;
-    private Integer closedCount;
+    private int closedCount;
 
     @Builder
     public Restaurant(String apiId,
@@ -64,5 +64,9 @@ public class Restaurant {
         this.category1depth = category1depth;
         this.category2depth = category2depth;
         this.closedCount = 0;
+    }
+
+    public void addClosedCount() {
+        this.closedCount++;
     }
 }

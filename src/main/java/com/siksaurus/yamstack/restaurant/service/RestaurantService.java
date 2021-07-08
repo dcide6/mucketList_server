@@ -56,6 +56,10 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
+    public Restaurant getRestaurantById(long id) {
+        return restaurantRepository.findById(id).get();
+    }
+
     public Restaurant getRestaurantByApiId(String apiId) {
         return restaurantRepository.findByApiId(apiId).get();
     }
