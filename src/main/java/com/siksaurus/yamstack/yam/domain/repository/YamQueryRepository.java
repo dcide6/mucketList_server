@@ -14,8 +14,12 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.siksaurus.yamstack.account.domain.QAccount.account;
+import static com.siksaurus.yamstack.restaurant.domain.QRestaurant.restaurant;
+import static com.siksaurus.yamstack.yam.domain.QFood.food;
 import static com.siksaurus.yamstack.yam.domain.QYam.yam;
 import static com.siksaurus.yamstack.yam.domain.QTag.tag;
+import static com.siksaurus.yamstack.review.domain.QReview.review;
 
 @RequiredArgsConstructor
 @Repository
@@ -26,6 +30,11 @@ public class YamQueryRepository {
     public Page<Yam> findDynamicQuery(String email, YamDTO.filterYamInfo dto, Pageable pageable) {
 
         JPAQuery query = this.queryFactory.selectFrom(yam);
+        //N+1 회피를 위한 fetch join 적용, food 는 page 기능문제로 hibernate.default_batch_fetch_size 사이즈 변경 적용
+        query.leftJoin(yam.account, account).fetchJoin();
+        query.leftJoin(yam.restaurant, restaurant).fetchJoin();
+        query.leftJoin(yam.review, review).fetchJoin();
+
         query.where(yam.account.email.eq(email));
 
         //searching
@@ -45,7 +54,7 @@ public class YamQueryRepository {
                 break;
         }
         if(dto.getTags() != null) {
-            query.innerJoin(yam.tags, tag).where(tag.name.in(dto.getTags()));
+            query.innerJoin(yam.tags, tag).fetchJoin().where(tag.name.in(dto.getTags()));
         }
 
         //paging
@@ -58,6 +67,9 @@ public class YamQueryRepository {
 
     public List<Yam> findBetweenGenTime(LocalDate from, LocalDate to) {
         JPAQuery query = this.queryFactory.selectFrom(yam);
+        query.leftJoin(yam.account, account).fetchJoin();
+        query.leftJoin(yam.restaurant, restaurant).fetchJoin();
+        query.leftJoin(yam.review, review).fetchJoin();
 
         query.where(yam.genTime.between(from,to));
         QueryResults result = query.fetchResults();
@@ -66,6 +78,9 @@ public class YamQueryRepository {
 
     public List<Yam> findBetweenCompleteTime(LocalDate from, LocalDate to) {
         JPAQuery query = this.queryFactory.selectFrom(yam);
+        query.leftJoin(yam.account, account).fetchJoin();
+        query.leftJoin(yam.restaurant, restaurant).fetchJoin();
+        query.leftJoin(yam.review, review).fetchJoin();
 
         query.where(yam.competeTime.between(from,to));
         query.where(yam.isGood.eq(true));
@@ -75,6 +90,9 @@ public class YamQueryRepository {
 
     public List<Yam> findBetweenCompleteTimeAndNotGood(LocalDate from, LocalDate to) {
         JPAQuery query = this.queryFactory.selectFrom(yam);
+        query.leftJoin(yam.account, account).fetchJoin();
+        query.leftJoin(yam.restaurant, restaurant).fetchJoin();
+        query.leftJoin(yam.review, review).fetchJoin();
 
         query.where(yam.competeTime.between(from,to));
         QueryResults result = query.fetchResults();
