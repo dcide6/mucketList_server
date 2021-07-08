@@ -1,6 +1,7 @@
 package com.siksaurus.yamstack.account.controller;
 
 import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.account.service.LoginService;
 import com.siksaurus.yamstack.global.CommonResponse;
@@ -40,7 +41,7 @@ public class LoginController {
                 Account user = account.get();
                 user.setLastLoginDate(LocalDate.now());
                 accountService.saveAccount(user);
-                JwtAuthToken jwtAuthToken = (JwtAuthToken) loginService.createAuthToken(account.get());
+                JwtAuthToken jwtAuthToken = loginService.createAuthToken(account.get());
                 response = CommonResponse.builder()
                         .code("LOGIN_SUCCESS")
                         .status(200)
@@ -118,10 +119,14 @@ public class LoginController {
 
         CommonResponse response;
         if (loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())) {
+            Account account = new Account();
+            account.setEmail(dto.getEmail());
+            account.setRole(AccountRole.USER);
+            JwtAuthToken jwtAuthToken = loginService.createAuthToken(account);
             response = CommonResponse.builder()
                     .code("IDENTIFY_SUCCESS")
                     .status(200)
-                    .message("IDENTIFY_SUCCESS")
+                    .message(jwtAuthToken.getToken())
                     .build();
         } else {
             response = CommonResponse.builder()

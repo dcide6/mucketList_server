@@ -8,6 +8,7 @@ import com.siksaurus.yamstack.account.service.LoginService;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -16,6 +17,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -137,11 +139,17 @@ public class LoginControllerTest extends ControllerTest {
     public void accountIdentify() throws Exception {
 
         //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, expiredDate);
+
         AccountDTO.IdentifyAccountDTO dto = new AccountDTO.IdentifyAccountDTO();
         dto.setEmail("test@aaa.bbb");
         dto.setAuthCode("1234565");
 
         given(loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())).willReturn(true);
+        given(loginService.createAuthToken(any())).willReturn(jwtAuthToken);
 
         //when
         ResultActions result = mockMvc.perform(post("/login/identify")
