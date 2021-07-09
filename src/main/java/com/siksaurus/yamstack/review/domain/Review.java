@@ -29,21 +29,17 @@ public class Review {
 
     private LocalDate genTime;
     private LocalDate visitTime;
-
-//    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<ReviewImage> reviewImages = new ArrayList<>();
-
     private String imagePath;
     private String comment;
-//    private int likeNum;
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL)
     private Set<ReviewLike> reviewLikes;
     private boolean isShared;
     private Company company;
+    private MealTime mealTime;
 
     @Builder
     public Review(Long id, Yam yam, LocalDate visitTime, String imagePath,
-                  String comment, boolean isShared, Company company){
+                  String comment, boolean isShared, Company company, MealTime mealTime){
         this.id = id;
         this.yam = yam;
         this.genTime = LocalDate.now();
@@ -52,15 +48,6 @@ public class Review {
         this.comment = comment;
         this.isShared = isShared;
         this.company = company;
+        this.mealTime = mealTime;
     }
-
-//    public void addImage(ReviewImage reviewImage) {
-//        reviewImages.add(reviewImage);
-//        reviewImage.setReview(this);
-//    }
-//
-//    public void removeImage(ReviewImage reviewImage) {
-//        reviewImages.remove(reviewImage);
-//        reviewImage.setReview(null);
-//    }
 }
