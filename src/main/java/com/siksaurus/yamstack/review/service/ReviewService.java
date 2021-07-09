@@ -59,9 +59,20 @@ public class ReviewService {
         if (!review.isPresent()){
             return "Bad request: The review does not exist.";
         }
-        if (account == review.get().getYam().getAccount()) {
+        if (account.equals(review.get().getYam().getAccount())) {
+            String filePath = review.get().getImagePath();
+            String msg = "";
+            if (filePath != null){
+                String fileName = filePath.substring(filePath.lastIndexOf("/"));
+                String dirName = filePath.substring(0, filePath.lastIndexOf("/"));
+                dirName = dirName.substring(dirName.lastIndexOf("/")+1);
+                boolean deletedFile = s3Uploader.delete(dirName+fileName);
+                if (deletedFile) msg = "\nImage file [" + dirName + fileName + "] has been deleted from S3.";
+                else msg = "\nFailed to delete the image file.";
+            }
+
             reviewRepository.deleteById(review_id);
-            return "Review [ " + review_id + " ] has been deleted.";
+            return "Review [ " + review_id + " ] has been deleted." + msg;
         }else{
             return "Bad request: Only reviewers can delete reviews.";
         }

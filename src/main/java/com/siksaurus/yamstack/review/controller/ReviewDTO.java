@@ -1,6 +1,7 @@
 package com.siksaurus.yamstack.review.controller;
 
 import com.siksaurus.yamstack.review.domain.Company;
+import com.siksaurus.yamstack.review.domain.MealTime;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Builder;
@@ -29,6 +30,7 @@ public class ReviewDTO {
         private String comment;
         private boolean isShared;
         private Company company;
+        private MealTime mealTime;
 
         public Review toEntity() {
             Review review = Review.builder()
@@ -38,18 +40,20 @@ public class ReviewDTO {
                     .comment(comment)
                     .isShared(isShared)
                     .company(company)
+                    .mealTime(mealTime)
                     .build();
             return review;
         }
 
         @Builder
         public CreateReviewDTO(Yam yam, LocalDate visitTime,
-                               String comment, boolean isShared, Company company){
+                               String comment, boolean isShared, Company company, MealTime mealTime){
             this.yam = yam;
             this.visitTime = visitTime;
             this.comment = comment;
             this.isShared = isShared;
             this.company = company;
+            this.mealTime = mealTime;
         }
     }
 }

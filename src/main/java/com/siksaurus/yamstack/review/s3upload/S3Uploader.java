@@ -34,11 +34,22 @@ public class S3Uploader {
 
     public String upload(File uploadFile, String dirName) {
         String fileNmae = dirName + "/"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyHHmmss"))
-                + uploadFile.getName();
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyHHmmss"));
         String uploadImageUrl = putS3(uploadFile, fileNmae);
         removeNewFile(uploadFile);
         return uploadImageUrl;
+    }
+
+    public boolean delete(String uploadImagePath) {
+        boolean deleted = false;
+        boolean imageExist = amazonS3Client.doesObjectExist(bucket, uploadImagePath);
+        if (imageExist){
+            amazonS3Client.deleteObject(bucket, uploadImagePath);
+            deleted = true;
+        }else{
+            deleted = false;
+        }
+        return deleted;
     }
 
     private String putS3(File uploadFile,String fileNname) {

@@ -2,6 +2,7 @@ package com.siksaurus.yamstack.review.controller;
 
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.review.domain.Company;
+import com.siksaurus.yamstack.review.domain.MealTime;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class ReviewVO {
     private String comment;
     private boolean isShared;
     private Company company;
+    private MealTime mealTime;
     private Long likeCount;
     private boolean iLiked;
     private String nickName;
@@ -39,6 +41,7 @@ public class ReviewVO {
         this.comment = review.getComment();
         this.isShared = review.isShared();
         this.company = review.getCompany();
+        this.mealTime = review.getMealTime();
         this.nickName = nickName;
         this.restaurantName = restaurantName;
         this.likeCount = likeCount != null? likeCount:0;
