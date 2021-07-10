@@ -38,11 +38,11 @@ public class Review {
     private MealTime mealTime;
 
     @Builder
-    public Review(Long id, Yam yam, LocalDate visitTime, String imagePath,
+    public Review(Long id, Yam yam, LocalDate genTime, LocalDate visitTime, String imagePath,
                   String comment, boolean isShared, Company company, MealTime mealTime){
         this.id = id;
         this.yam = yam;
-        this.genTime = LocalDate.now();
+        this.genTime = genTime == null? LocalDate.now():genTime;
         this.visitTime = visitTime;
         this.imagePath = imagePath;
         this.comment = comment;

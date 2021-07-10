@@ -56,4 +56,50 @@ public class ReviewDTO {
             this.mealTime = mealTime;
         }
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class UpdateReviewDTO {
+
+        @NotNull
+        private Long id;
+        private Yam yam;
+        private LocalDate visitTime;
+        private LocalDate genTime;
+        private String imagePath;
+        private String comment;
+        private boolean isShared;
+        private Company company;
+        private MealTime mealTime;
+        private boolean isImageChanged;
+
+        public Review toEntity() {
+            Review review = Review.builder()
+                    .id(id)
+                    .yam(yam)
+                    .visitTime(visitTime)
+                    .genTime(genTime)
+                    .imagePath(imagePath)
+                    .comment(comment)
+                    .isShared(isShared)
+                    .company(company)
+                    .mealTime(mealTime)
+                    .build();
+            return review;
+        }
+
+        @Builder
+        public UpdateReviewDTO(Long id, LocalDate visitTime,
+                               String comment, boolean isShared, Company company, MealTime mealTime,
+                               boolean isImageChanged){
+            this.id = id;
+            this.visitTime = visitTime;
+            this.comment = comment;
+            this.isShared = isShared;
+            this.company = company;
+            this.mealTime = mealTime;
+            this.isImageChanged = isImageChanged;
+        }
+    }
 }

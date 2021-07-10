@@ -7,6 +7,10 @@ spring:
   jpa:
     properties:
       hibernate.default_batch_fetch_size: 1000
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 logging:
   file:
     path: "/home/ec2-user/app/logs"
