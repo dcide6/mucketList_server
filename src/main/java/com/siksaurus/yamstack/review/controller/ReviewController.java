@@ -78,6 +78,35 @@ public class ReviewController {
                 .body(response);
     }
 
+    /* 얌 - 리뷰 수정*/
+    @PutMapping("/edit")
+    public ResponseEntity<CommonResponse> updateReview(@RequestHeader(value = "x-auth-token") String token,
+                                                       @RequestPart("reviewdata") ReviewDTO.UpdateReviewDTO dto,
+                                                       @RequestPart("image") MultipartFile multipartFile) throws IOException {
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+        Long updated_id = reviewService.updateReview(dto, multipartFile, email);
+        String code = "";
+        String message = "";
+        if (updated_id < 0){
+            code = "FAILED_TO_UPDATE";
+            message = "failed to update review [" + updated_id + "]";
+        }else{
+            code = "REVIEW_UPDATED";
+            message = "review [" + updated_id + "] has bean updated";
+        }
+        CommonResponse response =  CommonResponse.builder()
+                .code(code)
+                .status(200)
+                .message(message)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+
+    }
+
     /* 얌 - 리뷰 삭제*/
     @PostMapping("/delete")
     public String deleteReview(@RequestHeader(value = "x-auth-token") String token,
