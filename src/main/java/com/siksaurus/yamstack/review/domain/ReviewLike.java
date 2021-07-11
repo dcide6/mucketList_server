@@ -1,5 +1,6 @@
 package com.siksaurus.yamstack.review.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.siksaurus.yamstack.account.domain.Account;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,9 +19,11 @@ public class ReviewLike {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Account account;
 
     @Builder

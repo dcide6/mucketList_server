@@ -5,6 +5,10 @@ import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.restaurant.domain.Restaurant;
 import com.siksaurus.yamstack.restaurant.service.RestaurantService;
+import com.siksaurus.yamstack.review.domain.Company;
+import com.siksaurus.yamstack.review.domain.MealTime;
+import com.siksaurus.yamstack.review.domain.Review;
+import com.siksaurus.yamstack.review.domain.ReviewLike;
 import com.siksaurus.yamstack.yam.domain.Food;
 import com.siksaurus.yamstack.yam.domain.Tag;
 import com.siksaurus.yamstack.yam.domain.Yam;
@@ -89,8 +93,15 @@ public class YamControllerTest extends ControllerTest {
                 .role(AccountRole.USER)
                 .build();
 
+        Account another = Account.builder()
+                .email("test@ccc.ddd")
+                .password("1234")
+                .name("another")
+                .role(AccountRole.USER)
+                .build();
+
         List<Yam> yams = new ArrayList<>();
-        for(long i=100; i<=190; i+=10) {
+        for(long i=100; i<=190; i+=20) {
             Restaurant restaurant = Restaurant.builder()
                     .apiId(String.valueOf(i*10))
                     .name("식당"+i)
@@ -116,6 +127,22 @@ public class YamControllerTest extends ControllerTest {
             yam.setTags(new HashSet<>(Arrays.asList(Tag.builder().name("혼밥").build(), Tag.builder().name("언젠간").build())));
             yam.setMemo("친구 추천 맛집");
 
+            Review review = new Review();
+            review.setId(i+2);
+            review.setYam(yam);
+            review.setGenTime(LocalDate.now().minusDays(i/20));
+            review.setVisitTime(LocalDate.now().minusDays(i/20 - 5));
+            review.setImagePath("https://s3.aws.com/image"+i+".jpg");
+            review.setComment("테스트 리뷰"+i);
+            review.setShared(true);
+            review.setCompany(Company.ALONE);
+            review.setMealTime(MealTime.DINNNER);
+
+            ReviewLike like = ReviewLike.builder().account(another).review(review).build();
+            like.setId(i+3);
+            review.setReviewLikes(new HashSet<>(Arrays.asList(like)));
+
+            yam.setReview(review);
             yams.add(yam);
         }
 
@@ -124,7 +151,7 @@ public class YamControllerTest extends ControllerTest {
         filter.setCategory("한식");
         filter.setSearchName("식당");
         filter.setTags(Arrays.asList("혼밥"));
-        filter.setMode(1);
+        filter.setMode(2);
 
         final PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "genTime");
         Page<Yam> yamList = new PageImpl(yams, pageable, 10);
