@@ -106,6 +106,10 @@ class ReviewControllerTest extends ControllerTest {
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+        String token = httpHeaders.getFirst("x-auth-token");
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
 
         Account account = Account.builder()
                 .email("test@aaa.bbb")
@@ -153,7 +157,7 @@ class ReviewControllerTest extends ControllerTest {
 
 
 
-        given(reviewService.createReview(dto, image)).willReturn(0l);
+        given(reviewService.createReview(dto, image, email)).willReturn(0l);
 
 
         //when

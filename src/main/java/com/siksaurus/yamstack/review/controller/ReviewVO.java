@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -44,7 +45,7 @@ public class ReviewVO {
         this.mealTime = review.getMealTime();
         this.nickName = nickName;
         this.restaurantName = restaurantName;
-        this.likeCount = likeCount != null? likeCount:0;
+        this.likeCount = Objects.isNull(likeCount)? 0:likeCount;
         this.iLiked = iLiked;
     }
 

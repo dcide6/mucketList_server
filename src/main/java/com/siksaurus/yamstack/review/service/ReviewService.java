@@ -10,6 +10,7 @@ import com.siksaurus.yamstack.review.domain.repository.ReviewRepository;
 import com.siksaurus.yamstack.review.domain.repository.ReviewQueryRepository;
 import com.siksaurus.yamstack.review.s3upload.S3Uploader;
 import com.siksaurus.yamstack.yam.domain.Yam;
+import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
 import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final AccountRepository accountRepository;
+    private final YamRepository yamRepository;
     private final ReviewQueryRepository reviewQueryRepository;
     private final YamService yamService;
     private final S3Uploader s3Uploader;
@@ -43,11 +47,24 @@ public class ReviewService {
 
     /* 얌 - 리뷰 등록*/
     @Transactional
-    public Long createReview(ReviewDTO.CreateReviewDTO dto, MultipartFile multipartFile) throws IOException {
+    public Long createReview(ReviewDTO.CreateReviewDTO dto, MultipartFile multipartFile, String email) throws IOException {
+        boolean yamExist = yamRepository.existsById(dto.getYam().getId());
+        if (!yamExist) return -3l;
+        Yam yam = yamService.getYamById(dto.getYam().getId());
+
+        Review review = yam.getReview();
+        if (!Objects.isNull(review)) return -1l;
+        dto.setYam(yam);
+
+        Account account = accountRepository.findByEmail(email).get();
+        if (!account.equals(yam.getAccount())) return -2l;
+
         String filePath = s3Uploader.upload(multipartFile, "user-upload");
         if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
-        Yam yam = yamService.getYamById(dto.getYam().getId());
-        dto.setYam(yam);
+        if (Objects.isNull(yam.getCompeteTime())) {
+            yam.setCompeteTime(LocalDate.now());
+            yamRepository.save(yam);
+        }
         return reviewRepository.save(dto.toEntity()).getId();
     }
 
@@ -61,7 +78,7 @@ public class ReviewService {
         Account account = accountRepository.findByEmail(email).get();
         if (!account.equals(review.getYam().getAccount())) return -2l;
         if (dto.isImageChanged()){
-            deleteImage(review.getImagePath() == null? "":review.getImagePath());
+            deleteImage(Objects.isNull(review.getImagePath())? "":review.getImagePath());
             String filePath = s3Uploader.upload(multipartFile, "user-upload");
             if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
         }else{
@@ -74,7 +91,7 @@ public class ReviewService {
     public String deleteReview(Long review_id, String email) {
         Account account = accountRepository.findByEmail(email).get();
         Review review = isReviewExist(review_id);
-        if (review.equals(null)) return "Bad request: The review does not exist.";
+        if (Objects.isNull(review)) return "Bad request: The review does not exist.";
         if (account.equals(review.getYam().getAccount())) {
             String filePath = review.getImagePath();
             String deletedFile = deleteImage(filePath);

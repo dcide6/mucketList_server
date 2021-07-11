@@ -9,6 +9,7 @@ import com.siksaurus.yamstack.review.domain.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -19,15 +20,17 @@ public class LikeService {
     private final AccountService accountService;
 
     public Long updateLike(String user_mail, Long review_id) {
-        Review review = reviewRepository.findById(review_id).get();
+        Optional<Review> review = reviewRepository.findById(review_id);
+        if (!review.isPresent()) return -1l;
         Account account = accountService.getAccountByEmail(user_mail);
-        Optional<ReviewLike> reviewLike= checkAlreadyLike(account, review);
+        Optional<ReviewLike> reviewLike= checkAlreadyLike(account, review.get());
         if (!reviewLike.isPresent()) {
-            likeRepository.save(new ReviewLike(account, review));
+            ReviewLike newReviewLike = likeRepository.save(ReviewLike.builder().review(review.get()).account(account).build());
+            return newReviewLike.getId();
         }else{
             likeRepository.delete(reviewLike.get());
+            return reviewLike.get().getId();
         }
-        return reviewLike.get().getId();
     }
 
     private Optional<ReviewLike> checkAlreadyLike(Account account, Review review) {

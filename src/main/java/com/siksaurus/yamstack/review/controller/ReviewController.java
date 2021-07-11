@@ -62,15 +62,28 @@ public class ReviewController {
 
     /* 얌 - 리뷰 등록*/
     @PostMapping("")
-    public ResponseEntity<CommonResponse> createReview(@RequestPart("reviewdata") ReviewDTO.CreateReviewDTO dto,
+    public ResponseEntity<CommonResponse> createReview(@RequestHeader(value = "x-auth-token") String token,
+                                                       @RequestPart("reviewdata") ReviewDTO.CreateReviewDTO dto,
                                                        @RequestPart("image") MultipartFile multipartFile//List<MultipartFile> multipartFiles
                                                                         ) throws IOException {
-        Long new_id = reviewService.createReview(dto, multipartFile);
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
 
+        Long new_id = reviewService.createReview(dto, multipartFile, email);
+
+        String code = "";
+        String message = "";
+        if (new_id < 0){
+            code = "FAILED_TO_CREATE";
+            message = "failed to create review";
+        }else{
+            code = "REVIEW_UPDATED";
+            message = "review [" + new_id + "] has bean created";
+        }
         CommonResponse response =  CommonResponse.builder()
-                .code("REVIEW_CREATED")
+                .code(code)
                 .status(200)
-                .message("review [" + new_id + "] has bean created")
+                .message(message)
                 .build();
 
         return ResponseEntity.ok()
@@ -128,9 +141,17 @@ public class ReviewController {
         if (user_mail != null){
             result = likeService.updateLike(user_mail, review_id);
         }
+
+        String code = "";
+        String message = "";
+        if (result < 0){
+            message = "failed to update review's like";
+        }else{
+            message = "like [" + result + "] has bean changed";
+        }
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body("like [" + result.toString() + "] has bean changed");
+                .body(message);
     }
 }
 
