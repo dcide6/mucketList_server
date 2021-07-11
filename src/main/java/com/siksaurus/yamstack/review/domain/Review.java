@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -42,7 +43,7 @@ public class Review {
                   String comment, boolean isShared, Company company, MealTime mealTime){
         this.id = id;
         this.yam = yam;
-        this.genTime = genTime == null? LocalDate.now():genTime;
+        this.genTime = Objects.isNull(genTime)? LocalDate.now():genTime;
         this.visitTime = visitTime;
         this.imagePath = imagePath;
         this.comment = comment;
