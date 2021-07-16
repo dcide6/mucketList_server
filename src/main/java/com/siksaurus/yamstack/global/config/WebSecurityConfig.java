@@ -1,6 +1,7 @@
 package com.siksaurus.yamstack.global.config;
 
 import com.siksaurus.yamstack.account.domain.AccountRole;
+import com.siksaurus.yamstack.global.exception.ExceptionHandlerFilter;
 import com.siksaurus.yamstack.global.security.JwtAccessDeniedHandler;
 import com.siksaurus.yamstack.global.security.JwtAuthenticationEntryPoint;
 import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
@@ -23,6 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
     private final JwtAuthenticationEntryPoint authenticationErrorHandler;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -75,6 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private JwtConfigurer securityConfigurerAdapter() {
-        return new JwtConfigurer(jwtAuthTokenProvider);
+        return new JwtConfigurer(jwtAuthTokenProvider, exceptionHandlerFilter);
     }
 }

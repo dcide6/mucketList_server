@@ -2,17 +2,23 @@ package com.siksaurus.yamstack.account.controller;
 
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
+import com.siksaurus.yamstack.account.domain.AccountStat;
+import com.siksaurus.yamstack.account.domain.repository.AccountStatRepository;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.account.service.LoginService;
 import com.siksaurus.yamstack.global.CommonResponse;
+import com.siksaurus.yamstack.global.TokenResponse;
 import com.siksaurus.yamstack.global.exception.LoginFailedException;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
+import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,17 +28,18 @@ public class LoginController {
 
     private final LoginService loginService;
     private final AccountService accountService;
+    private final AccountStatRepository accountStatRepository;
 
     @PostMapping("/sign")
-    public ResponseEntity<CommonResponse> login(@RequestBody AccountDTO.loginDTO loginDTO) {
+    public ResponseEntity<TokenResponse> login(@RequestBody AccountDTO.loginDTO loginDTO) {
 
         Optional<Account> account = loginService.login(loginDTO.getEmail(), loginDTO.getPassword());
 
         if (account.isPresent()) {
 
-            CommonResponse response;
+            TokenResponse response;
             if (!account.get().isEmailChecked()) {
-                response = CommonResponse.builder()
+                response = TokenResponse.builder()
                         .code("LOGIN_SUCCESS")
                         .status(200)
                         .message("Identity verification is required")
@@ -42,10 +49,13 @@ public class LoginController {
                 user.setLastLoginDate(LocalDate.now());
                 accountService.saveAccount(user);
                 JwtAuthToken jwtAuthToken = loginService.createAuthToken(account.get());
-                response = CommonResponse.builder()
+                JwtAuthToken refreshToken = loginService.createRefreshToken(account.get());
+                response = TokenResponse.builder()
                         .code("LOGIN_SUCCESS")
                         .status(200)
-                        .message(jwtAuthToken.getToken())
+                        .message("LOGIN_SUCCESS")
+                        .accessToken(jwtAuthToken.getToken())
+                        .refreshToken(refreshToken.getToken())
                         .build();
             }
             return ResponseEntity.ok()
@@ -94,7 +104,8 @@ public class LoginController {
             Account account = dto.toEntity();
             account.setEmailChecked(false);
             account.setAuthCode(authCode);
-            accountService.addAccount(account);
+            Account account_rst = accountService.addAccount(account);
+            accountStatRepository.save(AccountStat.builder().accountId(account_rst.getId()).date(LocalDate.now()).isJoin(true).build());
 
             response = CommonResponse.builder()
                     .code("JOIN_SUCCESS")
@@ -115,21 +126,24 @@ public class LoginController {
     }
 
     @PostMapping("/identify")
-    public ResponseEntity<CommonResponse> accountIdentify(@RequestBody AccountDTO.IdentifyAccountDTO dto) {
+    public ResponseEntity<TokenResponse> accountIdentify(@RequestBody AccountDTO.IdentifyAccountDTO dto) {
 
-        CommonResponse response;
+        TokenResponse response;
         if (loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())) {
             Account account = new Account();
             account.setEmail(dto.getEmail());
             account.setRole(AccountRole.USER);
             JwtAuthToken jwtAuthToken = loginService.createAuthToken(account);
-            response = CommonResponse.builder()
+            JwtAuthToken refreshToken = loginService.createRefreshToken(account);
+            response = TokenResponse.builder()
                     .code("IDENTIFY_SUCCESS")
                     .status(200)
-                    .message(jwtAuthToken.getToken())
+                    .message("IDENTIFY_SUCCESS")
+                    .accessToken(jwtAuthToken.getToken())
+                    .refreshToken(refreshToken.getToken())
                     .build();
         } else {
-            response = CommonResponse.builder()
+            response = TokenResponse.builder()
                     .code("IDENTIFY_FAIL")
                     .status(400)
                     .message("IDENTIFY_FAIL")
@@ -153,6 +167,23 @@ public class LoginController {
                 .code("AUTHCODE_RESEND")
                 .status(200)
                 .message("AUTHCODE_RESEND")
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<TokenResponse> refreshToken(@RequestBody AccountDTO.refreshTokenDTO dto) {
+        Map<String, String> tokens = loginService.refreshAccessToken(dto.getRefreshToken());
+
+        TokenResponse response = TokenResponse.builder()
+                .code("REFRESH ACCESS TOKEN")
+                .status(200)
+                .message("REFRESH ACCESS TOKEN")
+                .accessToken(tokens.get("access"))
+                .refreshToken(tokens.get("refresh"))
                 .build();
 
         return ResponseEntity.ok()

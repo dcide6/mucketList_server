@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.account.service;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
 import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,6 +30,7 @@ public class LoginService {
     private final JavaMailSender mailSender;
 
     private final static long LOGIN_RETENTION_MINUTES = 60 * 12;
+    private final static long REFRESH_TOKEN_MINUTE = 60 * 24 * 7;
 
     public Optional<Account> login(String email, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -42,9 +46,26 @@ public class LoginService {
     }
 
     public JwtAuthToken createAuthToken(Account account) {
-
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(LOGIN_RETENTION_MINUTES).atZone(ZoneId.systemDefault()).toInstant());
-        return jwtAuthTokenProvider.createAuthToken(account.getEmail(), account.getRole(), expiredDate);
+        return jwtAuthTokenProvider.createAuthToken(account.getEmail(), account.getRole(), "access", expiredDate);
+    }
+
+    public JwtAuthToken createRefreshToken(Account account) {
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(REFRESH_TOKEN_MINUTE).atZone(ZoneId.systemDefault()).toInstant());
+        return jwtAuthTokenProvider.createAuthToken(account.getEmail(), account.getRole(), "refresh", expiredDate);
+    }
+
+    public Map<String, String> refreshAccessToken(String token) {
+        JwtAuthToken refreshToken = jwtAuthTokenProvider.convertAuthToken(token);
+        Claims claims = refreshToken.getData();
+        String email = (String) claims.get("sub");
+        Account account = accountService.getAccountByEmail(email);
+
+        Map<String, String> rst = new HashMap<>();
+        rst.put("access", this.createAuthToken(account).getToken());
+        rst.put("refresh", this.createRefreshToken(account).getToken());
+
+        return rst;
     }
 
     public String authMailSend(String id, String name) {

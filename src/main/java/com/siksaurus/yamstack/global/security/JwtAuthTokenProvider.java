@@ -29,8 +29,8 @@ public class JwtAuthTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtAuthToken createAuthToken(String id, AccountRole role, Date expiredDate) {
-        return new JwtAuthToken(id, role, expiredDate, key);
+    public JwtAuthToken createAuthToken(String id, AccountRole role, String type, Date expiredDate) {
+        return new JwtAuthToken(id, role, type, expiredDate, key);
     }
 
     public JwtAuthToken convertAuthToken(String token) {
@@ -40,7 +40,6 @@ public class JwtAuthTokenProvider {
     public Authentication getAuthentication(JwtAuthToken authToken) {
 
         if(authToken.validate()) {
-
             Claims claims = authToken.getData();
             Collection<? extends GrantedAuthority> authorities =
                     Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})

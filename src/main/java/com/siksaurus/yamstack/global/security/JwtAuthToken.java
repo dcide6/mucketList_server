@@ -19,43 +19,46 @@ public class JwtAuthToken {
     private final Key key;
 
     private static final String AUTHORITIES_KEY = "role";
+    private static final String TOKEN_TYPE = "type";
 
     JwtAuthToken(String token, Key key) {
         this.token = token;
         this.key = key;
     }
 
-    JwtAuthToken(String id, AccountRole role, Date expiredDate, Key key) {
+    JwtAuthToken(String id, AccountRole role, String type, Date expiredDate, Key key) {
         this.key = key;
-        this.token = createJwtAuthToken(id, role, expiredDate).get();
+        this.token = createJwtAuthToken(id, role, type, expiredDate).get();
     }
 
     public boolean validate() {
-        return getData() != null;
+        return getData() != null && getData().get("type").equals("access");
     }
 
     public Claims getData() {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (SecurityException e) {
-            log.info("Invalid JWT signature.");
+            log.error("Invalid JWT signature.");
         } catch (MalformedJwtException e) {
-            log.info("Invalid JWT token.");
+            log.error("Invalid JWT token.");
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token.");
+            log.error("Expired JWT token.");
+            throw e;
         } catch (UnsupportedJwtException e) {
-            log.info("Unsupported JWT token.");
+            log.error("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
-            log.info("JWT token compact of handler are invalid.");
+            log.error("JWT token compact of handler are invalid.");
         }
         return null;
     }
 
-    private Optional<String> createJwtAuthToken(String id, AccountRole role, Date expiredDate) {
+    private Optional<String> createJwtAuthToken(String id, AccountRole role, String type, Date expiredDate) {
 
         String token = Jwts.builder()
                 .setSubject(id)
                 .claim(AUTHORITIES_KEY, role)
+                .claim(TOKEN_TYPE, type)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(expiredDate)
                 .compact();

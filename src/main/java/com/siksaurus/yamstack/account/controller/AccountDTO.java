@@ -81,4 +81,11 @@ public class AccountDTO {
         private String authCode;
     }
 
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class refreshTokenDTO {
+        private String refreshToken;
+    }
+
 }

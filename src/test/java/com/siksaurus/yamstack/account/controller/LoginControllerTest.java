@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -46,10 +48,13 @@ public class LoginControllerTest extends ControllerTest {
         account.setEmailChecked(true);
 
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
-        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",AccountRole.USER, expiredDate);
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",AccountRole.USER, "access", expiredDate);
+        JwtAuthToken refreshToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",AccountRole.USER, "refresh", expiredDate);
+
 
         given(loginService.login(loginDTO.getEmail(), loginDTO.getPassword())).willReturn(Optional.ofNullable(account));
         given(loginService.createAuthToken(account)).willReturn(jwtAuthToken);
+        given(loginService.createRefreshToken(account)).willReturn(refreshToken);
 
         //when
         ResultActions result = mockMvc.perform(post("/login/sign")
@@ -61,7 +66,7 @@ public class LoginControllerTest extends ControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value(jwtAuthToken.getToken()));
+                .andExpect(jsonPath("$.accessToken").value(jwtAuthToken.getToken()));
     }
 
     @Test
@@ -113,12 +118,13 @@ public class LoginControllerTest extends ControllerTest {
                 .name("test")
                 .role(AccountRole.USER)
                 .build();
+        account.setId(123);
         account.setEmailChecked(false);
 
         given(accountService.checkDuplicateEmail(dto.getEmail())).willReturn(true);
         given(accountService.checkDuplicateName(dto.getName())).willReturn(true);
         given(loginService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
-        given(accountService.addAccount(dto.toEntity())).willReturn(account);
+        given(accountService.addAccount(any())).willReturn(account);
 
         //when
         ResultActions result = mockMvc.perform(post("/login/join")
@@ -142,7 +148,8 @@ public class LoginControllerTest extends ControllerTest {
         AccountRole role = AccountRole.USER;
 
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
-        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, expiredDate);
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "access", expiredDate);
+        JwtAuthToken refreshToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "refresh", expiredDate);
 
         AccountDTO.IdentifyAccountDTO dto = new AccountDTO.IdentifyAccountDTO();
         dto.setEmail("test@aaa.bbb");
@@ -150,6 +157,7 @@ public class LoginControllerTest extends ControllerTest {
 
         given(loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())).willReturn(true);
         given(loginService.createAuthToken(any())).willReturn(jwtAuthToken);
+        given(loginService.createRefreshToken(any())).willReturn(refreshToken);
 
         //when
         ResultActions result = mockMvc.perform(post("/login/identify")
@@ -193,6 +201,36 @@ public class LoginControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.code").value("AUTHCODE_RESEND"));
+    }
+
+    @Test
+    public void refreshToken() throws Exception {
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "access", expiredDate);
+        JwtAuthToken refreshToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "refresh", expiredDate);
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access", jwtAuthToken.getToken());
+        tokens.put("refresh", refreshToken.getToken());
+
+        AccountDTO.refreshTokenDTO dto = new AccountDTO.refreshTokenDTO();
+        dto.setRefreshToken(refreshToken.getToken());
+
+        given(loginService.refreshAccessToken(any())).willReturn(tokens);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/refreshToken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
 }
