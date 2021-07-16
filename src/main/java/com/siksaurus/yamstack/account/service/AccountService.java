@@ -56,12 +56,13 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public void deleteAccountByEmail(String email) {
+    public long deleteAccountByEmail(String email) {
         Account account = this.getAccountByEmail(email);
         List<Yam> yamList = yamService.getYamListByUserEmail(email);
         yamList.forEach(yam -> yam.setAccount(null));
         yamService.saveYams(yamList);
         accountRepository.deleteById(account.getId());
+        return account.getId();
     }
 
     public boolean checkDuplicateEmail(String email) {

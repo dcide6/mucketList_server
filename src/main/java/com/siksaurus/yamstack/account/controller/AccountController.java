@@ -1,6 +1,8 @@
 package com.siksaurus.yamstack.account.controller;
 
 import com.siksaurus.yamstack.account.domain.Account;
+import com.siksaurus.yamstack.account.domain.AccountStat;
+import com.siksaurus.yamstack.account.domain.repository.AccountStatRepository;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.global.CommonResponse;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
@@ -11,12 +13,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/api/v1/account")
 @RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
+    private final AccountStatRepository accountStatRepository;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
 
     @GetMapping
@@ -61,7 +66,9 @@ public class AccountController {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         String email = (String) jwtAuthToken.getData().get("sub");
 
-        accountService.deleteAccountByEmail(email);
+        long id = accountService.deleteAccountByEmail(email);
+        accountStatRepository.save(AccountStat.builder().accountId(id).date(LocalDate.now()).isJoin(false).build());
+
         CommonResponse response = CommonResponse.builder()
                 .code("DELETE ACCOUNT SUCCESS")
                 .status(200)

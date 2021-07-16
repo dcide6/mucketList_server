@@ -8,10 +8,14 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface YamRepository extends JpaRepository<Yam, Long> {
+
+    @EntityGraph(attributePaths = {"account", "restaurant", "foods", "tags", "review"})
+    List<Yam> findAllByGenTimeBetween(LocalDate from, LocalDate to);
     @EntityGraph(attributePaths = {"account", "restaurant", "foods", "tags", "review"})
     List<Yam> findByAccount_Email(String email);
     @EntityGraph(attributePaths = {"account", "restaurant", "foods", "tags", "review"})
