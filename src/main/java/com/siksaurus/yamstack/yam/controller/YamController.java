@@ -55,7 +55,7 @@ public class YamController {
                 .body(yams);
     }
 
-    @PostMapping("/restaurant/{id}")
+    @GetMapping("/restaurant/{id}")
     public ResponseEntity<Yam> saveYamFromRestaurant(@RequestHeader(value = "x-auth-token") String token,
                                                      @PathVariable long id) {
 

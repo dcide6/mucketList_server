@@ -214,7 +214,7 @@ public class YamControllerTest extends ControllerTest {
         given(this.yamService.saveYamFromRestaurant(any(), any())).willReturn(yam);
 
         //when
-        ResultActions result = mockMvc.perform(post("/api/v1/yam/restaurant/456").headers(httpHeaders));
+        ResultActions result = mockMvc.perform(get("/api/v1/yam/restaurant/456").headers(httpHeaders));
 
         //then
         result

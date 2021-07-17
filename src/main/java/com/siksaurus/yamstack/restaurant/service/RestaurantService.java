@@ -74,21 +74,21 @@ public class RestaurantService {
             if (dto.getId() != null) {
                 String address = dto.getAddress_name();
                 String category = dto.getCategory_name();
-                String[] addresses = address.split(" ");
-                String[] categories = category.split(">");
+                String[] addresses = address!=null?address.split(" "): new String[0];
+                String[] categories = category!=null?category.split(">"): new String[0];
 
                 Restaurant restaurant = Restaurant.builder()
                         .apiId(dto.getId())
                         .name(dto.getPlace_name())
                         .addName(dto.getAddress_name())
                         .roadAddName(dto.getRoad_address_name())
-                        .region1depth(addresses[0])
-                        .region2depth(addresses[1])
-                        .region3depth(addresses[2])
+                        .region1depth(addresses.length>0?addresses[0]:"")
+                        .region2depth(addresses.length>1?addresses[1]:"")
+                        .region3depth(addresses.length>2?addresses[2]:"")
                         .x(dto.getX())
                         .y(dto.getY())
-                        .category1depth(categories[0].trim())
-                        .category2depth(categories[1].trim())
+                        .category1depth(categories.length>0?categories[0].trim():"")
+                        .category2depth(categories.length>1?categories[1].trim():"")
                         .build();
                 rst = this.saveRestaurant(restaurant);
             } else {

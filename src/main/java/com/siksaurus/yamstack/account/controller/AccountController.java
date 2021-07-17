@@ -45,10 +45,10 @@ public class AccountController {
         String email = (String) jwtAuthToken.getData().get("sub");
 
         Account account_rst = null;
-        if(dto.getNewPassword() != null) {
+        if(dto.getNewPassword() != null && !dto.getNewPassword().equals("")) {
             account_rst = accountService.changePassword(email, dto.getNewPassword());
         }
-        if(dto.getNewName() != null) {
+        if(dto.getNewName() != null && !dto.getNewName().equals("")) {
             Account account = accountService.getAccountByEmail(email);
             account.setName(dto.getNewName());
             account_rst = accountService.saveAccount(account);

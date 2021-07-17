@@ -47,4 +47,14 @@ public class GlobalControllAdvice {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ErrorResponse> IllegalArgumentException (Exception e) {
+        log.error(e.getMessage());
+        final ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(e.getMessage());
+        errorResponse.setCode(ErrorCode.INVALID_INPUT_VALUE.getCode());
+        errorResponse.setStatus(ErrorCode.INVALID_INPUT_VALUE.getStatus());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }
