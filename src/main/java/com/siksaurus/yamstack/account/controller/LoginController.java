@@ -35,36 +35,32 @@ public class LoginController {
 
         Optional<Account> account = loginService.login(loginDTO.getEmail(), loginDTO.getPassword());
 
-        if (account.isPresent()) {
-
-            TokenResponse response;
-            if (!account.get().isEmailChecked()) {
-                response = TokenResponse.builder()
-                        .code("LOGIN_SUCCESS")
-                        .status(200)
-                        .message("Identity verification is required")
-                        .build();
-            } else {
-                Account user = account.get();
-                user.setLastLoginDate(LocalDate.now());
-                accountService.saveAccount(user);
-                JwtAuthToken jwtAuthToken = loginService.createAuthToken(account.get());
-                JwtAuthToken refreshToken = loginService.createRefreshToken(account.get());
-                response = TokenResponse.builder()
-                        .code("LOGIN_SUCCESS")
-                        .status(200)
-                        .message("LOGIN_SUCCESS")
-                        .accessToken(jwtAuthToken.getToken())
-                        .refreshToken(refreshToken.getToken())
-                        .build();
-            }
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(response);
-
+        TokenResponse response;
+        if (!account.get().isEmailChecked()) {
+            response = TokenResponse.builder()
+                    .code("LOGIN_SUCCESS")
+                    .status(200)
+                    .message("Identity verification is required")
+                    .build();
         } else {
-            throw new LoginFailedException();
+            Account user = account.get();
+            user.setLastLoginDate(LocalDate.now());
+            accountService.saveAccount(user);
+            JwtAuthToken jwtAuthToken = loginService.createAuthToken(account.get());
+            JwtAuthToken refreshToken = loginService.createRefreshToken(account.get());
+            response = TokenResponse.builder()
+                    .code("LOGIN_SUCCESS")
+                    .status(200)
+                    .message("LOGIN_SUCCESS")
+                    .accessToken(jwtAuthToken.getToken())
+                    .refreshToken(refreshToken.getToken())
+                    .build();
         }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+
     }
 
     @GetMapping("/emailCheck/{email}")

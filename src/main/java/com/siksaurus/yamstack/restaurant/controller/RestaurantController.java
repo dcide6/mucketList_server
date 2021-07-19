@@ -51,6 +51,16 @@ public class RestaurantController {
                 .body(vo);
     }
 
+    @GetMapping("/kakao/{api_id}")
+    public ResponseEntity<RestaurantVO> getRestaurantDetailByKaKao(@PathVariable String api_id) {
+        Restaurant restaurant = restaurantService.getRestaurantByApiId(api_id);
+        RestaurantVO vo = restaurantService.getRestaurantVO(restaurant.getId(), null, null);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(vo);
+    }
+
     // mode: "near", "want", "recommend", "done" : "여기 가까워", "여기 갈래", "여기 강추", "여기 가봤어"
     @PostMapping("/list")
     public ResponseEntity<Page<RestaurantVO>> getRestaurantList(@RequestBody RestaurantDTO.selectRestaurantDTO dto, RestaurantPageRequest pageable) {

@@ -3,6 +3,7 @@ package com.siksaurus.yamstack.global.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,9 +14,9 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 public class GlobalControllAdvice {
 
-    @ExceptionHandler(LoginFailedException.class)
-    protected ResponseEntity<ErrorResponse> loginFailedException (LoginFailedException e) {
-        log.error("login fail exception", e);
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<ErrorResponse> badCredentialsException (BadCredentialsException e) {
+        log.error("login fail exception", e.getMessage());
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.LOGIN_FAILED);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
@@ -49,7 +50,7 @@ public class GlobalControllAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<ErrorResponse> IllegalArgumentException (Exception e) {
+    protected ResponseEntity<ErrorResponse> illegalArgumentException (Exception e) {
         log.error(e.getMessage());
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(e.getMessage());

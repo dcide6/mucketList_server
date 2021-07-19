@@ -179,6 +179,69 @@ public class RestaurantControllerTest extends ControllerTest {
     }
 
     @Test
+    public void getRestaurantByKaKao() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(123);
+
+        ReviewVO review = new ReviewVO();
+        review.setId(123l);
+        review.setGenTime(LocalDate.now());
+        review.setVisitTime(LocalDate.now().minusDays(30));
+        review.setImagePath("https://aws.s3.com/image1.jpg");
+        review.setComment("가성비 훌륭");
+        review.setShared(true);
+        review.setCompany(Company.ALONE);
+        review.setLikeCount(10l);
+        review.setILiked(false);
+        review.setNickName("얌얌박사");
+        review.setRestaurantName("식당");
+
+        RestaurantVO vo = new RestaurantVO();
+        vo.setRestaurant(restaurant);
+        vo.setYamPick(56);
+        vo.setVisitNum(30);
+        vo.setRecommend(25);
+        vo.setReviewNum(1);
+        vo.setCompany(Company.ALONE);
+        vo.setTags(new HashSet<>(Arrays.asList("가성비", "혼밥", "재방문")));
+        vo.setFoods(new HashSet<>(Arrays.asList("김치찌개", "계란말이", "라면사리")));
+        vo.setReviews(Arrays.asList(review));
+
+        given(this.restaurantService.getRestaurantByApiId("123456")).willReturn(restaurant);
+        given(this.restaurantService.getRestaurantVO(123l, null, null)).willReturn(vo);
+
+        //when
+        ResultActions result = mockMvc.perform(get("/api/v1/restaurant/kakao/123456").headers(httpHeaders));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+    }
+
+    @Test
     public void getRestaurantList() throws Exception {
 
         //given

@@ -189,6 +189,17 @@ include::{snippets}/get-restaurant/curl-request.adoc[leveloffset=+3]
 ==== Response
 include::{snippets}/get-restaurant/http-response.adoc[leveloffset=+3]
 
+=== 카카오 식당 id로 식당 정보 가져오기
+
+==== Request
+include::{snippets}/get-restaurant-by-ka-kao/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/get-restaurant-by-ka-kao/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/get-restaurant-by-ka-kao/http-response.adoc[leveloffset=+3]
+
 === 식당 리스트 가져오기(여기얌)
 
 NOTE: mode = near: 여기 가까워, want: 여기 갈래, recommend: 여기 강추, done: 여기 가봤어
