@@ -26,6 +26,15 @@ public class AccountDTO {
     @Getter
     @Setter
     @NoArgsConstructor
+    public static class AccountPwCheckDTO {
+
+        @NotNull
+        private String password;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
     public static class CreateAccountDTO {
 
         @NotNull

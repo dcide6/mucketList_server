@@ -5,6 +5,7 @@ import com.siksaurus.yamstack.ControllerTest;
 import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
+import com.siksaurus.yamstack.account.service.LoginService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,6 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class AccountControllerTest extends ControllerTest {
+
+    @MockBean
+    LoginService loginService;
 
     @Test
     public void getAccount() throws Exception {
@@ -44,6 +49,40 @@ public class AccountControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(get("/api/v1/account").headers(httpHeaders));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void AccountPwCheck() throws Exception {
+
+        //given
+        AccountDTO.AccountPwCheckDTO dto = new AccountDTO.AccountPwCheckDTO();
+        dto.setPassword("1234");
+
+        AccountRole role = AccountRole.USER;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("x-auth-token", makeJwtAuthToken(role, expiredDate));
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+
+        given(loginService.login("test@aaa.bbb", dto.getPassword())).willReturn(Optional.ofNullable(account));
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/v1/account/passwdCheck").headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)));
 
         //then
         result

@@ -86,19 +86,6 @@ include::{snippets}/check-duplicate-name/curl-request.adoc[leveloffset=+3]
 ==== Response
 include::{snippets}/check-duplicate-name/http-response.adoc[leveloffset=+3]
 
-=== 현재 비밀번호 확인
-
-NOTE: true: 현재 비밀번호 일치, false: 불일치
-
-==== Request
-include::{snippets}/check-password/http-request.adoc[leveloffset=+3]
-
-==== Curl Request
-include::{snippets}/check-password/curl-request.adoc[leveloffset=+3]
-
-==== Response
-include::{snippets}/check-password/http-response.adoc[leveloffset=+3]
-
 === 인증 번호 재전송
 
 ==== Request
@@ -151,6 +138,19 @@ include::{snippets}/get-account/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/get-account/http-response.adoc[leveloffset=+3]
+
+=== 사용자 현재 비밀번호 확인
+
+NOTE: true: 현재 비밀번호 일치, false: 불일치
+
+==== Request
+include::{snippets}/account-pw-check/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/account-pw-check/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/account-pw-check/http-response.adoc[leveloffset=+3]
 
 === 사용자 계정 수정하기
 

@@ -4,6 +4,7 @@ import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountStat;
 import com.siksaurus.yamstack.account.domain.repository.AccountStatRepository;
 import com.siksaurus.yamstack.account.service.AccountService;
+import com.siksaurus.yamstack.account.service.LoginService;
 import com.siksaurus.yamstack.global.CommonResponse;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
 import com.siksaurus.yamstack.global.security.JwtAuthTokenProvider;
@@ -14,12 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/account")
 @RequiredArgsConstructor
 public class AccountController {
 
+    private final LoginService loginService;
     private final AccountService accountService;
     private final AccountStatRepository accountStatRepository;
     private final JwtAuthTokenProvider jwtAuthTokenProvider;
@@ -35,6 +38,33 @@ public class AccountController {
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(account);
+    }
+
+    @PostMapping("/passwdCheck")
+    public ResponseEntity<CommonResponse> checkPasswd(@RequestHeader(value = "x-auth-token") String token,
+                                                      @RequestBody AccountDTO.AccountPwCheckDTO dto) {
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
+        CommonResponse response;
+        try {
+            Optional<Account> account = loginService.login(email, dto.getPassword());
+            response = CommonResponse.builder()
+                    .code("CHECK_PASSWORD")
+                    .status(200)
+                    .message("true")
+                    .build();
+        }catch (Exception e) {
+            response = CommonResponse.builder()
+                    .code("CHECK_PASSWORD")
+                    .status(200)
+                    .message("false")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     @PutMapping
