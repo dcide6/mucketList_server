@@ -104,6 +104,36 @@ public class LoginControllerTest extends ControllerTest {
     }
 
     @Test
+    public void checkPassword() throws Exception {
+
+        //given
+        AccountDTO.loginDTO loginDTO = new AccountDTO.loginDTO();
+        loginDTO.setEmail("test@aaa.bbb");
+        loginDTO.setPassword("1234");
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .name("test")
+                .password("1234")
+                .role(AccountRole.USER)
+                .build();
+        account.setEmailChecked(true);
+
+        given(loginService.login(loginDTO.getEmail(), loginDTO.getPassword())).willReturn(Optional.ofNullable(account));
+
+        //when
+        ResultActions result = mockMvc.perform(post("/login/passwdCheck")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginDTO)));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
     public void createAccount() throws Exception {
 
         //given

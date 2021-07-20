@@ -91,6 +91,28 @@ public class LoginController {
                 .body(response);
     }
 
+    @PostMapping("/passwdCheck")
+    public ResponseEntity<CommonResponse> checkPasswd(@RequestBody AccountDTO.loginDTO dto) {
+        CommonResponse response;
+        try {
+            Optional<Account> account = loginService.login(dto.getEmail(), dto.getPassword());
+            response = CommonResponse.builder()
+                    .code("CHECK_PASSWORD")
+                    .status(200)
+                    .message("true")
+                    .build();
+        }catch (Exception e) {
+            response = CommonResponse.builder()
+                    .code("CHECK_PASSWORD")
+                    .status(200)
+                    .message("false")
+                    .build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
     @PostMapping("/join")
     public ResponseEntity<CommonResponse> createAccount(@RequestBody AccountDTO.CreateAccountDTO dto) {
 
