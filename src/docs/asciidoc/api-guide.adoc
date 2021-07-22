@@ -332,3 +332,15 @@ include::{snippets}/delete-review/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/delete-review/http-response.adoc[leveloffset=+3]
+
+
+=== 리뷰 전체조회
+
+==== Request
+include::{snippets}/list/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/list/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/list/http-response.adoc[leveloffset=+3]
