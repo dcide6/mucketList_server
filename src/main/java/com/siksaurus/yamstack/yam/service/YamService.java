@@ -159,6 +159,7 @@ public class YamService {
 
                 Restaurant restaurant = yam.getRestaurant();
                 String key = restaurant.getRegion1depth();
+                if(key == null) continue;
                 String value = restaurant.getRegion2depth();
                 if(value.equals("")) value = restaurant.getRegion3depth();
                 String category = restaurant.getCategory2depth();

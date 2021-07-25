@@ -69,7 +69,9 @@ public class RestaurantService {
     }
 
     public Restaurant getRestaurantFromRequest(RestaurantDTO.createRestaurantDTO dto) {
-        Restaurant rst = restaurantRepository.findByApiId(dto.getId()).orElse(null);
+        Restaurant rst = null;
+        if(dto.getId()!=null) rst = restaurantRepository.findByApiId(dto.getId()).orElse(null);
+
         if (rst == null) {
             if (dto.getId() != null) {
                 String address = dto.getAddress_name();
