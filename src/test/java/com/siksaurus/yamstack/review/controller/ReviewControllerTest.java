@@ -9,6 +9,7 @@ import com.siksaurus.yamstack.review.domain.Company;
 import com.siksaurus.yamstack.review.domain.MealTime;
 import com.siksaurus.yamstack.review.domain.Review;
 import com.siksaurus.yamstack.review.domain.ReviewLike;
+import com.siksaurus.yamstack.review.service.LikeService;
 import com.siksaurus.yamstack.review.service.ReviewService;
 import com.siksaurus.yamstack.yam.controller.YamDTO;
 import com.siksaurus.yamstack.yam.domain.Food;
@@ -45,6 +46,9 @@ class ReviewControllerTest extends ControllerTest {
     @MockBean
     ReviewService reviewService;
 
+    @MockBean
+    LikeService likeService;
+
     @Test
     void list() throws Exception {
         //given
@@ -73,7 +77,7 @@ class ReviewControllerTest extends ControllerTest {
                 .build();
 
         List<Yam> yams = new ArrayList<>();
-        List<Review> reviews = new ArrayList<>();
+        List<ReviewVO> reviews = new ArrayList<>();
         for(long i=100; i<=190; i+=20) {
             Restaurant restaurant = Restaurant.builder()
                     .apiId(String.valueOf(i*10))
@@ -117,8 +121,11 @@ class ReviewControllerTest extends ControllerTest {
 
             yam.setReview(review);
             yams.add(yam);
-            reviews.add(review);
+
+            ReviewVO reviewVO = new ReviewVO(review, yam.getAccount().getName(),"맛집",i,8l, true);
+            reviews.add(reviewVO);
         }
+
 
         final PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "genTime");
         Page<ReviewVO> reviewList = new PageImpl(reviews, pageable, 10);
@@ -185,7 +192,7 @@ class ReviewControllerTest extends ControllerTest {
                 .yam(yam)
                 .build();
 
-        ReviewVO reviewVO = new ReviewVO(review, yam.getAccount().getName(),"맛집",1l, true);
+        ReviewVO reviewVO = new ReviewVO(review, yam.getAccount().getName(),"맛집",1l,6l, true);
         given(reviewService.getReviewById(id, email)).willReturn(reviewVO);
 
 
@@ -330,6 +337,72 @@ class ReviewControllerTest extends ControllerTest {
 
         //when
         ResultActions result = mockMvc.perform(post("/api/v1/review/delete")
+                .headers(httpHeaders)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"review_id\": \"1\" }"));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void updateReviewLike() throws Exception {
+
+        //given
+        AccountRole role = AccountRole.USER;
+        Long id = 1l;
+
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String token = makeJwtAuthToken(role, expiredDate);
+        httpHeaders.add("x-auth-token",token);
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .roadAddName("서울 동작구 성대로123길 123")
+                .region1depth("서울")
+                .region2depth("동작구")
+                .region3depth("상도동")
+                .category1depth("음식점")
+                .category2depth("한식")
+                .x("127.05902969025047")
+                .y("37.51207412593136")
+                .build();
+        restaurant.setId(123);
+        Yam yam = Yam.builder()
+                .account(account)
+                .genTime(LocalDate.now())
+                .restaurant(restaurant)
+                .build();
+        Review review = Review.builder()
+                .id(id)
+                .comment("맛집임 추천!")
+                .company(Company.FRIEND)
+                .imagePath("")
+                .isShared(true)
+                .visitTime(LocalDate.now())
+                .yam(yam)
+                .build();
+
+        given(likeService.updateLike("test@aaa.bbb", id)).willReturn(id);
+
+        //when
+        ResultActions result = mockMvc.perform(post("/api/v1/review/like")
                 .headers(httpHeaders)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"review_id\": \"1\" }"));

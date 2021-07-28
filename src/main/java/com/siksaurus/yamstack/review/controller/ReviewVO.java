@@ -26,6 +26,7 @@ public class ReviewVO {
     private Company company;
     private MealTime mealTime;
     private Long likeCount;
+    private Long reviewCount;
     private boolean iLiked;
     private String nickName;
     private String restaurantName;
@@ -34,6 +35,7 @@ public class ReviewVO {
                     String nickName,
                     String restaurantName,
                     Long likeCount,
+                    Long reviewCount,
                     boolean iLiked) {
         this.id = review.getId();
         this.genTime = review.getGenTime();
@@ -46,6 +48,7 @@ public class ReviewVO {
         this.nickName = nickName;
         this.restaurantName = restaurantName;
         this.likeCount = Objects.isNull(likeCount)? 0:likeCount;
+        this.reviewCount = Objects.isNull(reviewCount)? 0:reviewCount;
         this.iLiked = iLiked;
     }
 

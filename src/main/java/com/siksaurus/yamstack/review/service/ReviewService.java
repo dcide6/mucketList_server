@@ -32,7 +32,6 @@ public class ReviewService {
     private final AccountRepository accountRepository;
     private final YamRepository yamRepository;
     private final ReviewQueryRepository reviewQueryRepository;
-    private final YamService yamService;
     private final S3Uploader s3Uploader;
 
     /* 여기얌 - 리뷰 리스트 조회*/
@@ -50,7 +49,7 @@ public class ReviewService {
     public Long createReview(ReviewDTO.CreateReviewDTO dto, MultipartFile multipartFile, String email) throws IOException {
         boolean yamExist = yamRepository.existsById(dto.getYam().getId());
         if (!yamExist) return -3l;
-        Yam yam = yamService.getYamById(dto.getYam().getId());
+        Yam yam = yamRepository.findById(dto.getYam().getId()).get();
 
         Review review = yam.getReview();
         if (!Objects.isNull(review)) return -1l;
