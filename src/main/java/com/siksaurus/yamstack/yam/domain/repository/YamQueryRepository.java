@@ -38,9 +38,9 @@ public class YamQueryRepository {
         query.where(yam.account.email.eq(email));
 
         //searching
-        if(dto.getRegion() != null) query.where(yam.restaurant.region2depth.eq(dto.getRegion()));
-        if(dto.getCategory() != null) query.where(yam.restaurant.category2depth.eq(dto.getCategory()));
-        if(dto.getSearchName() != null) query.where(yam.restaurant.name.contains(dto.getSearchName()));
+        if(dto.getRegion() != null && !dto.getRegion().equals("")) query.where(yam.restaurant.region2depth.eq(dto.getRegion()));
+        if(dto.getCategory() != null && !dto.getCategory().equals("")) query.where(yam.restaurant.category2depth.eq(dto.getCategory()));
+        if(dto.getSearchName() != null && !dto.getSearchName().equals("")) query.where(yam.restaurant.name.contains(dto.getSearchName()));
         switch (dto.getMode()) {
             case 1: //얌얌리스트
                 query.where(yam.competeTime.isNull());
@@ -53,7 +53,7 @@ public class YamQueryRepository {
                 query.where(yam.isGood.eq(false));
                 break;
         }
-        if(dto.getTags() != null) {
+        if(dto.getTags() != null && dto.getTags().size()>0) {
             query.innerJoin(yam.tags, tag).fetchJoin().where(tag.name.in(dto.getTags()));
         }
 
