@@ -6,6 +6,7 @@ import com.siksaurus.yamstack.account.domain.AccountStat;
 import com.siksaurus.yamstack.account.domain.repository.AccountStatRepository;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.account.service.LoginService;
+import com.siksaurus.yamstack.account.service.MailService;
 import com.siksaurus.yamstack.global.CommonResponse;
 import com.siksaurus.yamstack.global.TokenResponse;
 import com.siksaurus.yamstack.global.exception.LoginFailedException;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class LoginController {
 
     private final LoginService loginService;
+    private final MailService mailService;
     private final AccountService accountService;
     private final AccountStatRepository accountStatRepository;
 
@@ -92,11 +95,11 @@ public class LoginController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<CommonResponse> createAccount(@RequestBody AccountDTO.CreateAccountDTO dto) {
+    public ResponseEntity<CommonResponse> createAccount(@RequestBody AccountDTO.CreateAccountDTO dto) throws MessagingException {
 
         CommonResponse response;
         if (accountService.checkDuplicateEmail(dto.getEmail()) && accountService.checkDuplicateName(dto.getName())) {
-            String authCode = loginService.authMailSend(dto.getEmail(), dto.getName());
+            String authCode = mailService.authMailSend(dto.getEmail(), dto.getName());
             Account account = dto.toEntity();
             account.setEmailChecked(false);
             account.setAuthCode(authCode);
@@ -122,15 +125,14 @@ public class LoginController {
     }
 
     @PostMapping("/identify")
-    public ResponseEntity<TokenResponse> accountIdentify(@RequestBody AccountDTO.IdentifyAccountDTO dto) {
+    public ResponseEntity<TokenResponse> accountIdentify(@RequestBody AccountDTO.IdentifyAccountDTO dto) throws MessagingException {
 
         TokenResponse response;
         if (loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())) {
-            Account account = new Account();
-            account.setEmail(dto.getEmail());
-            account.setRole(AccountRole.USER);
+            Account account = accountService.getAccountByEmail(dto.getEmail());
             JwtAuthToken jwtAuthToken = loginService.createAuthToken(account);
             JwtAuthToken refreshToken = loginService.createRefreshToken(account);
+            mailService.welcomeMailSend(dto.getEmail(), account.getName());
             response = TokenResponse.builder()
                     .code("IDENTIFY_SUCCESS")
                     .status(200)
@@ -152,9 +154,9 @@ public class LoginController {
     }
 
     @PostMapping("/authCode")
-    public ResponseEntity<CommonResponse> authCodeResend(@RequestBody AccountDTO.resendAuthCodeDTO dto) {
+    public ResponseEntity<CommonResponse> authCodeResend(@RequestBody AccountDTO.resendAuthCodeDTO dto) throws MessagingException {
         Account account = accountService.getAccountByEmail(dto.getEmail());
-        String authCode = loginService.authMailSend(dto.getEmail(), account.getName());
+        String authCode = mailService.authMailSend(dto.getEmail(), account.getName());
         account.setAuthCode(authCode);
         account.setEmailChecked(false);
         accountService.saveAccount(account);

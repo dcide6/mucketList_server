@@ -12,7 +12,7 @@ plugins {
 }
 
 group = 'com.siksaurus'
-version = '1.0.10-SNAPSHOT'
+version = '1.0.11-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -36,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
     // QueryDSL

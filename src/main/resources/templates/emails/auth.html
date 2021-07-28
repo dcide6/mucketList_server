@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap"
+          rel="stylesheet">
+    <title>Email</title>
+</head>
+<body style="font-family: 'Noto Sans KR',sans-serif;">
+<div style="width: 700px;">
+    <img src="../../images/emails/header.png" th:src="|cid:${logo}|"/>
+    <div style="font-size: 20px; font-weight: bold; padding-top: 45px; text-align: center">얌스택 인증번호입니다.</div>
+    <div style="font-size: 16px; padding-top: 20px; padding-bottom: 35px; text-align: center">아래 인증번호를 확인하여 이메일 주소 인증을 완료해 주세요.</div>
+    <hr style="width: 615px; border: 0; height: 3px; background: #ffd74a" />
+    <div style="font-size: 20px; font-weight: bold; color: #ff3535; text-align: center; padding: 15px"><b th:text="${code}"></b></div>
+    <hr style="width: 615px; border: 0; height: 3px; background: #ffd74a" />
+    <div style="font-size: 12px; font-weight: lighter; padding-top: 30px; text-align: center">본 메일은 서비스 이용 시 고객님께서 입력하신 이메일 주소로 발송되었으며 발신 전용으로 회신되지 않습니다.</div>
+</div>
+</body>
+</html>
+
+

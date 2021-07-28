@@ -5,6 +5,7 @@ import com.siksaurus.yamstack.account.domain.Account;
 import com.siksaurus.yamstack.account.domain.AccountRole;
 import com.siksaurus.yamstack.account.service.AccountService;
 import com.siksaurus.yamstack.account.service.LoginService;
+import com.siksaurus.yamstack.account.service.MailService;
 import com.siksaurus.yamstack.global.security.JwtAuthToken;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,6 +31,9 @@ public class LoginControllerTest extends ControllerTest {
 
     @MockBean
     LoginService loginService;
+
+    @MockBean
+    MailService mailService;
 
     @Test
     public void login() throws Exception {
@@ -123,7 +127,7 @@ public class LoginControllerTest extends ControllerTest {
 
         given(accountService.checkDuplicateEmail(dto.getEmail())).willReturn(true);
         given(accountService.checkDuplicateName(dto.getName())).willReturn(true);
-        given(loginService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
+        given(mailService.authMailSend(dto.getEmail(), dto.getName())).willReturn("123456");
         given(accountService.addAccount(any())).willReturn(account);
 
         //when
@@ -147,6 +151,15 @@ public class LoginControllerTest extends ControllerTest {
         //given
         AccountRole role = AccountRole.USER;
 
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+        account.setId(123);
+        account.setEmailChecked(false);
+
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "access", expiredDate);
         JwtAuthToken refreshToken = jwtAuthTokenProvider.createAuthToken("test@aaa.bbb",role, "refresh", expiredDate);
@@ -155,6 +168,7 @@ public class LoginControllerTest extends ControllerTest {
         dto.setEmail("test@aaa.bbb");
         dto.setAuthCode("1234565");
 
+        given(accountService.getAccountByEmail(dto.getEmail())).willReturn(account);
         given(loginService.checkAuthCode(dto.getEmail(), dto.getAuthCode())).willReturn(true);
         given(loginService.createAuthToken(any())).willReturn(jwtAuthToken);
         given(loginService.createRefreshToken(any())).willReturn(refreshToken);
@@ -187,7 +201,7 @@ public class LoginControllerTest extends ControllerTest {
                 .build();
 
         given(accountService.getAccountByEmail(dto.getEmail())).willReturn(account);
-        given(loginService.authMailSend(dto.getEmail(), account.getName())).willReturn("123456");
+        given(mailService.authMailSend(dto.getEmail(), account.getName())).willReturn("123456");
 
 
         //when

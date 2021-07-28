@@ -8,6 +8,7 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.mail.MessagingException;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -50,12 +51,19 @@ public class GlobalControllAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<ErrorResponse> illegalArgumentException (Exception e) {
+    protected ResponseEntity<ErrorResponse> illegalArgumentException (IllegalArgumentException e) {
         log.error(e.getMessage());
         final ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(e.getMessage());
         errorResponse.setCode(ErrorCode.INVALID_INPUT_VALUE.getCode());
         errorResponse.setStatus(ErrorCode.INVALID_INPUT_VALUE.getStatus());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    protected ResponseEntity<ErrorResponse> messagingException (MessagingException e) {
+        log.error("mail send exception", e);
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
