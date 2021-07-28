@@ -3,13 +3,19 @@ package com.siksaurus.yamstack.review.domain.repository;
 
 import com.querydsl.core.Query;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.siksaurus.yamstack.review.controller.ReviewVO;
+import com.siksaurus.yamstack.review.domain.QReview;
+import com.siksaurus.yamstack.review.domain.QReviewLike;
 import com.siksaurus.yamstack.review.domain.Review;
+import com.siksaurus.yamstack.yam.domain.QYam;
 import lombok.RequiredArgsConstructor;
 import org.geolatte.geom.crs.Projection;
 import org.springframework.data.domain.Page;
@@ -29,14 +35,21 @@ public class ReviewQueryRepository {
     private final JPAQueryFactory queryFactory;
 
     public Page<ReviewVO> findReviewsDynamicQuery(Pageable pageable, String email){
+        QReview qReview = new QReview("qReview");
+        QReviewLike qReviewLike = new QReviewLike("qReviewLike");
         JPAQuery query = this.queryFactory
                 .select(Projections.constructor(ReviewVO.class,
                         review,
                         yam.account.name.as("nickName"),
                         yam.restaurant.name.as("restaurantName"),
                         ExpressionUtils.as(
-                                JPAExpressions.select(count(reviewLike))
-                                        .from(reviewLike).where(reviewLike.review.eq(review)),"likeCount"
+                                JPAExpressions.select(qReviewLike.count())
+                                        .from(qReviewLike).where(review.id.eq(qReviewLike.review.id)),"likeCount"
+                        ),
+                        ExpressionUtils.as(
+                                JPAExpressions.select(qReview.count())
+                                        .from(qReview).where(yam.account.name.eq(qReview.yam.account.name)),"reviewCount"
+
                         ),
                         ExpressionUtils.as(
                                 JPAExpressions.select(reviewLike)
@@ -46,7 +59,7 @@ public class ReviewQueryRepository {
                         )
                 )
                 )
-                .from(review, yam);
+                .from(review);
 
         //searching
         query.where(review.isShared.eq(true));

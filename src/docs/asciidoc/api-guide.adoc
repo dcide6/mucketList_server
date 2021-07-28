@@ -344,3 +344,16 @@ include::{snippets}/list/curl-request.adoc[leveloffset=+3]
 
 ==== Response
 include::{snippets}/list/http-response.adoc[leveloffset=+3]
+
+
+
+=== 리뷰 좋아요/취소
+
+==== Request
+include::{snippets}/update-review-like/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/update-review-like/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/update-review-like/http-response.adoc[leveloffset=+3]
