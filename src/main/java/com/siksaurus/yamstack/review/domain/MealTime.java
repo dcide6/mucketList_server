@@ -4,5 +4,5 @@ public enum MealTime {
 
     BREAKFAST,
     LUNCH,
-    DINNNER
+    DINNER
 }

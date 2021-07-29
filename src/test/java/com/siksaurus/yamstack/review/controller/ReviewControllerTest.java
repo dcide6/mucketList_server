@@ -113,7 +113,7 @@ class ReviewControllerTest extends ControllerTest {
             review.setComment("테스트 리뷰"+i);
             review.setShared(true);
             review.setCompany(Company.ALONE);
-            review.setMealTime(MealTime.DINNNER);
+            review.setMealTime(MealTime.DINNER);
 
             ReviewLike like = ReviewLike.builder().account(another).review(review).build();
             like.setId(i+3);
