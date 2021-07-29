@@ -63,7 +63,7 @@ public class ReviewQueryRepository {
 
         //searching
         query.where(review.isShared.eq(true));
-        query.innerJoin(review.yam, yam);
+        query.innerJoin(review.yam, yam).fetchJoin();
 
         //paging
         query.offset(pageable.getOffset()).limit(pageable.getPageSize());
@@ -82,6 +82,11 @@ public class ReviewQueryRepository {
                         ExpressionUtils.as(
                                 JPAExpressions.select(count(reviewLike))
                                         .from(reviewLike).where(reviewLike.review.eq(review)),"likeCount"
+                        ),
+                        ExpressionUtils.as(
+                                JPAExpressions.select(count(review))
+                                        .from(review).where(yam.account.name.eq(review.yam.account.name)),"reviewCount"
+
                         ),
                         ExpressionUtils.as(
                                 JPAExpressions.select(reviewLike)
