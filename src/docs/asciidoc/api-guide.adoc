@@ -336,6 +336,36 @@ include::{snippets}/delete-review/http-response.adoc[leveloffset=+3]
 
 === 리뷰 전체조회
 
+NOTE: company(:동행) mealTime(:식사 시간)
+
+.company list
+|===
+|Enum |Value
+
+|0
+|FAMILY     //가족과
+|1
+|FRIEND     //친구와
+|2
+|DATE       //연인과
+|3
+|ALONE     //혼자
+|4
+|BUSINESS    //업무차, 회식
+|===
+
+.mealTime list
+|===
+|Enum |Value
+
+|0
+|BREAKFAST
+|1
+|LUNCH
+|2
+|DINNER
+|===
+
 ==== Request
 include::{snippets}/list/http-request.adoc[leveloffset=+3]
 

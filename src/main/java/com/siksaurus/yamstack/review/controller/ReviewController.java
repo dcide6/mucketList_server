@@ -131,7 +131,7 @@ public class ReviewController {
     }
     /* 얌 - 좋아요*/
     @PostMapping("/like")
-    public ResponseEntity<String> updateReviewLike(@RequestHeader(value = "x-auth-token") String token,
+    public ResponseEntity<CommonResponse> updateReviewLike(@RequestHeader(value = "x-auth-token") String token,
                                                    @RequestBody Map<String, String> params) {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         String user_mail = (String) jwtAuthToken.getData().get("sub");
@@ -145,13 +145,23 @@ public class ReviewController {
         String code = "";
         String message = "";
         if (result < 0){
+            code = "LIKE_FAILED";
             message = "failed to update review's like";
         }else{
+
+            code = "LIKE_UPDATED";
             message = "like [" + result + "] has bean changed";
         }
+
+        CommonResponse response =  CommonResponse.builder()
+                .code(code)
+                .status(200)
+                .message(message)
+                .build();
+
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(message);
+                .body(response);
     }
 }
 
