@@ -308,8 +308,16 @@ include::{snippets}/create-review/http-request.adoc[leveloffset=+3]
 ==== Curl Request
 include::{snippets}/create-review/curl-request.adoc[leveloffset=+3]
 
+=== 리뷰 수정하기
+
+==== Request
+include::{snippets}/update-review/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/update-review/curl-request.adoc[leveloffset=+3]
+
 ==== Response
-include::{snippets}/create-review/http-response.adoc[leveloffset=+3]
+include::{snippets}/update-review/http-response.adoc[leveloffset=+3]
 
 === 리뷰 조회하기
 
