@@ -95,8 +95,8 @@ public class ReviewService {
             String filePath = review.getImagePath();
             String deletedFile = deleteImage(filePath);
             String msg = "";
-            if (!"".equals(deletedFile)) msg = "\nImage file [" + deletedFile + "] has been deleted from S3.";
-            else msg = "\nFailed to delete the image file.";
+            if (!"".equals(deletedFile)) msg = "Image file [" + deletedFile + "] has been deleted from S3.";
+            else msg = "There is no deleted image file.";
             reviewRepository.deleteById(review_id);
             return "Review [ " + review_id + " ] has been deleted." + msg;
         }else{
@@ -111,7 +111,7 @@ public class ReviewService {
         else return null;
     }
     public String deleteImage(String filePath){
-        if (!"".equals(filePath)){
+        if (!(filePath == null || filePath.isEmpty())){
             String fileName = filePath.substring(filePath.lastIndexOf("/"));
             String dirName = filePath.substring(0, filePath.lastIndexOf("/"));
             dirName = dirName.substring(dirName.lastIndexOf("/")+1);

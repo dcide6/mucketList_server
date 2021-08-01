@@ -23,9 +23,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+
 import static org.mockito.ArgumentMatchers.any;
 
 import java.nio.charset.Charset;
@@ -283,7 +288,90 @@ class ReviewControllerTest extends ControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
     }
+    @Test
+    void updateReview() throws Exception {
+        //given
+        AccountRole role = AccountRole.USER;
+        Long id = 1L;
 
+        Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String token = makeJwtAuthToken(role, expiredDate);
+        httpHeaders.add("x-auth-token",token);
+
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+
+        Account account = Account.builder()
+                .email("test@aaa.bbb")
+                .password("1234")
+                .name("test")
+                .role(AccountRole.USER)
+                .build();
+        Restaurant restaurant = Restaurant.builder()
+                .apiId("123456")
+                .name("얌스택 식당")
+                .addName("서울 동작구 상도동 123-123")
+                .build();
+        restaurant.setId(123);
+        Yam yam = Yam.builder()
+                .account(account)
+                .genTime(LocalDate.now())
+                .restaurant(restaurant)
+                .build();
+        yam.setId(2l);
+        Review review = Review.builder()
+                .id(id)
+                .comment("맛집임 추천!")
+                .company(Company.FRIEND)
+                .imagePath("user-upload/010821114032274591")
+                .isShared(true)
+                .visitTime(LocalDate.now())
+                .yam(yam)
+                .build();
+
+        ReviewDTO.UpdateReviewDTO dto = ReviewDTO.UpdateReviewDTO.builder()
+                .id(review.getId())
+                .comment("리뷰 수정!")
+                .company(Company.FAMILY)
+                .visitTime(LocalDate.now())
+                .isShared(true)
+                .mealTime(MealTime.LUNCH)
+                .isImageChanged(true)
+                .build();
+        dto.setYam(yam);
+
+        MockMultipartFile reviewdata = new MockMultipartFile("reviewdata", "",
+                "application/json", objectMapper.writeValueAsString(dto).getBytes(Charset.forName("UTF-8")));
+
+        MockMultipartFile image = new MockMultipartFile("image","image.jpg",
+                "multipart/form-data","<<jpg data>>".getBytes());
+
+        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart("/api/v1/review/edit");
+        builder.with(new RequestPostProcessor() {
+            @Override
+            public MockHttpServletRequest postProcessRequest(MockHttpServletRequest request) {
+                request.setMethod("PUT");
+                return request;
+            }
+        });
+
+
+        given(reviewService.updateReview(dto, image, email))
+                .willReturn(id);
+
+        //when
+        ResultActions result = mockMvc.perform(builder
+                .file(image)
+                .file(reviewdata).contentType(MediaType.APPLICATION_JSON)
+                .headers(httpHeaders)
+                .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        result
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
     @Test
     void deleteReview() throws Exception {
         //given
@@ -327,13 +415,14 @@ class ReviewControllerTest extends ControllerTest {
                 .id(id)
                 .comment("맛집임 추천!")
                 .company(Company.FRIEND)
-                .imagePath("")
+                .imagePath("user-upload/010821114032274591")
                 .isShared(true)
                 .visitTime(LocalDate.now())
                 .yam(yam)
                 .build();
 
-        given(reviewService.deleteReview(id, "test@aaa.bbb")).willReturn("Review [ " + id + " ] has been deleted.");
+        given(reviewService.deleteReview(id, "test@aaa.bbb"))
+                .willReturn("Review [ "+id+" ] has been deleted.Image file ["+review.getImagePath()+"] has been deleted from S3.");
 
         //when
         ResultActions result = mockMvc.perform(post("/api/v1/review/delete")

@@ -122,12 +122,28 @@ public class ReviewController {
 
     /* 얌 - 리뷰 삭제*/
     @PostMapping("/delete")
-    public String deleteReview(@RequestHeader(value = "x-auth-token") String token,
+    public ResponseEntity<CommonResponse> deleteReview(@RequestHeader(value = "x-auth-token") String token,
                                @RequestBody Map<String, Long> params) {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         Long review_id = params.get("review_id");
         String email = (String) jwtAuthToken.getData().get("sub");
-        return reviewService.deleteReview(review_id, email);
+        String code = "";
+        String message = reviewService.deleteReview(review_id, email);
+        if (!message.startsWith("Review")){
+            code = "DELETING_FAILED";
+        }else{
+            code = "REVIEW_DELETED";
+        }
+
+        CommonResponse response =  CommonResponse.builder()
+                .code(code)
+                .status(200)
+                .message(message)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
     /* 얌 - 좋아요*/
     @PostMapping("/like")
