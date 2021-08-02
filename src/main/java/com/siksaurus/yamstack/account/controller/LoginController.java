@@ -44,6 +44,8 @@ public class LoginController {
                     .code("LOGIN_SUCCESS")
                     .status(200)
                     .message("Identity verification is required")
+                    .accessToken("")
+                    .refreshToken("")
                     .build();
         } else {
             Account user = account.get();
@@ -112,16 +114,21 @@ public class LoginController {
                     .message("JOIN_SUCCESS")
                     .build();
 
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response);
+
         } else {
             response = CommonResponse.builder()
                     .code("DUPLICATED_ACCOUNT")
                     .status(400)
                     .message("DUPLICATED_ACCOUNT")
                     .build();
+
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response);
         }
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
     }
 
     @PostMapping("/identify")
@@ -140,17 +147,21 @@ public class LoginController {
                     .accessToken(jwtAuthToken.getToken())
                     .refreshToken(refreshToken.getToken())
                     .build();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response);
         } else {
             response = TokenResponse.builder()
                     .code("IDENTIFY_FAIL")
                     .status(400)
                     .message("IDENTIFY_FAIL")
+                    .accessToken("")
+                    .refreshToken("")
                     .build();
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(response);
         }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(response);
     }
 
     @PostMapping("/authCode")
