@@ -44,9 +44,37 @@ public class ReviewService {
         return reviewQueryRepository.findReviewDynamicQuery(id, email);
     }
 
+    /* 리뷰 - 사진 업로드*/
+    @Transactional
+    public String saveImage(MultipartFile multipartFile) throws IOException {
+        return s3Uploader.upload(multipartFile, "user-upload");
+    }
+
+    /* 리뷰 - 사진 경로 저장*/
+    @Transactional
+    public Long saveImagePath(Long review_id, String email, MultipartFile multipartFile) throws IOException {
+        Review review = isReviewExist(review_id);
+        if (review.equals(null)) return -1l;
+        Account account = accountRepository.findByEmail(email).get();
+        if (!account.equals(review.getYam().getAccount())) return -2l;
+        ReviewDTO.UpdateReviewDTO dto = ReviewDTO.UpdateReviewDTO.builder()
+                .id(review.getId())
+                .comment(review.getComment())
+                .company(review.getCompany())
+                .visitTime(review.getVisitTime())
+                .isShared(review.isShared())
+                .mealTime(review.getMealTime())
+                .isShared(review.isShared())
+                .build();
+        dto.setYam(review.getYam());
+        dto.setGenTime(review.getGenTime());
+        String imagePath = s3Uploader.upload(multipartFile, "user-upload");
+        dto.setImagePath(imagePath);
+        return reviewRepository.save(dto.toEntity()).getId();
+    }
     /* 얌 - 리뷰 등록*/
     @Transactional
-    public Long createReview(ReviewDTO.CreateReviewDTO dto, MultipartFile multipartFile, String email) throws IOException {
+    public Long createReview(ReviewDTO.CreateReviewDTO dto, String email) throws IOException {
         boolean yamExist = yamRepository.existsById(dto.getYam().getId());
         if (!yamExist) return -3l;
         Yam yam = yamRepository.findById(dto.getYam().getId()).get();
@@ -58,8 +86,8 @@ public class ReviewService {
         Account account = accountRepository.findByEmail(email).get();
         if (!account.equals(yam.getAccount())) return -2l;
 
-        String filePath = s3Uploader.upload(multipartFile, "user-upload");
-        if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
+//        String filePath = s3Uploader.upload(multipartFile, "user-upload");
+//        if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
         if (Objects.isNull(yam.getCompeteTime())) {
             yam.setCompeteTime(LocalDate.now());
             yamRepository.save(yam);
@@ -69,7 +97,7 @@ public class ReviewService {
 
     /* 얌 - 리뷰 수정*/
     @Transactional
-    public Long updateReview(ReviewDTO.UpdateReviewDTO dto, MultipartFile multipartFile, String email) throws IOException {
+    public Long updateReview(ReviewDTO.UpdateReviewDTO dto, String email) throws IOException {
         Review review = isReviewExist(dto.getId());
         if (review.equals(null)) return -1l;
         dto.setYam(review.getYam());
@@ -78,8 +106,8 @@ public class ReviewService {
         if (!account.equals(review.getYam().getAccount())) return -2l;
         if (dto.isImageChanged()){
             deleteImage(Objects.isNull(review.getImagePath())? "":review.getImagePath());
-            String filePath = s3Uploader.upload(multipartFile, "user-upload");
-            if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
+//            String filePath = s3Uploader.upload(multipartFile, "user-upload");
+//            if (!"NO FILE".equals(filePath)) dto.setImagePath(filePath);
         }else{
             dto.setImagePath(review.getImagePath());
         }

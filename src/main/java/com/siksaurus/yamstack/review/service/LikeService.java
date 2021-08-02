@@ -25,11 +25,12 @@ public class LikeService {
         Account account = accountService.getAccountByEmail(user_mail);
         Optional<ReviewLike> reviewLike= checkAlreadyLike(account, review.get());
         if (!reviewLike.isPresent()) {
-            ReviewLike newReviewLike = likeRepository.save(ReviewLike.builder().review(review.get()).account(account).build());
-            return newReviewLike.getId();
+            //ReviewLike newReviewLike =
+            likeRepository.save(ReviewLike.builder().review(review.get()).account(account).build());
+            return 1l;
         }else{
             likeRepository.delete(reviewLike.get());
-            return reviewLike.get().getId();
+            return 2l;
         }
     }
 

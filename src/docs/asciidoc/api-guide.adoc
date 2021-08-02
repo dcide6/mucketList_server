@@ -302,11 +302,27 @@ include::{snippets}/delete-yam-test/http-response.adoc[leveloffset=+3]
 
 === 리뷰 등록하기
 
+NOTE: [리뷰 등록] (POST) 리뷰 등록하기 -> [RESPONSE] 리뷰 ID -> (POST) 리뷰 사진 등록
+
 ==== Request
 include::{snippets}/create-review/http-request.adoc[leveloffset=+3]
 
 ==== Curl Request
 include::{snippets}/create-review/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/create-review/http-response.adoc[leveloffset=+3]
+
+=== 리뷰 사진 등록
+
+==== Request
+include::{snippets}/save-image-path/http-request.adoc[leveloffset=+3]
+
+==== Curl Request
+include::{snippets}/save-image-path/curl-request.adoc[leveloffset=+3]
+
+==== Response
+include::{snippets}/save-image-path/http-response.adoc[leveloffset=+3]
 
 === 리뷰 수정하기
 

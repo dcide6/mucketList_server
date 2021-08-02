@@ -60,16 +60,67 @@ public class ReviewController {
                 .body(review);
     }
 
+    /* 리뷰 - 사진 등록*/
+    @PostMapping("/image")
+    public ResponseEntity<CommonResponse> uploadImage(@RequestHeader(value = "x-auth-token") String token,
+                                                       @RequestPart MultipartFile multipartFile) throws IOException {
+        String filePath = reviewService.saveImage(multipartFile);
+        String code = "";
+        String message = "";
+        if (filePath == null || filePath.isEmpty()){
+            code = "FAILED_TO_UPLOAD";
+            message = "failed to upload file";
+        }else{
+            code = "SUCCESS_UPLOAD_IMAGE";
+            message = "image uploaded as [" + filePath + "]";
+        }
+        CommonResponse response =  CommonResponse.builder()
+                .code(code)
+                .status(200)
+                .message(message)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
+    /* 리뷰 - 리뷰에 사진 등록*/
+    @PostMapping("/image/{review_id}")
+    public ResponseEntity<CommonResponse> saveImagePath(@RequestHeader(value = "x-auth-token") String token,
+                                                      @PathVariable("review_id")  Long review_id,
+                                                      @RequestPart MultipartFile multipartFile) throws IOException {
+        JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
+        String email = (String) jwtAuthToken.getData().get("sub");
+        Long updatedReview = reviewService.saveImagePath(review_id, email, multipartFile);
+        String code = "";
+        String message = "";
+        if (updatedReview < 0){
+            code = "FAILED_TO_UPDATE_REVIEW";
+            message = "check review status";
+        }else{
+            code = "SUCCESS_UPDATE_IMAGE";
+            message = "image added at [" + updatedReview + "]";
+        }
+        CommonResponse response =  CommonResponse.builder()
+                .code(code)
+                .status(200)
+                .message(message)
+                .build();
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
     /* 얌 - 리뷰 등록*/
     @PostMapping("")
     public ResponseEntity<CommonResponse> createReview(@RequestHeader(value = "x-auth-token") String token,
-                                                       @RequestPart("reviewdata") ReviewDTO.CreateReviewDTO dto,
-                                                       @RequestPart("image") MultipartFile multipartFile//List<MultipartFile> multipartFiles
-                                                                        ) throws IOException {
+                                                       @RequestBody ReviewDTO.CreateReviewDTO dto) throws IOException {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         String email = (String) jwtAuthToken.getData().get("sub");
 
-        Long new_id = reviewService.createReview(dto, multipartFile, email);
+        Long new_id = reviewService.createReview(dto, email);
 
         String code = "";
         String message = "";
@@ -94,11 +145,10 @@ public class ReviewController {
     /* 얌 - 리뷰 수정*/
     @PutMapping("/edit")
     public ResponseEntity<CommonResponse> updateReview(@RequestHeader(value = "x-auth-token") String token,
-                                                       @RequestPart("reviewdata") ReviewDTO.UpdateReviewDTO dto,
-                                                       @RequestPart("image") MultipartFile multipartFile) throws IOException {
+                                                       @RequestBody  ReviewDTO.UpdateReviewDTO dto) throws IOException {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         String email = (String) jwtAuthToken.getData().get("sub");
-        Long updated_id = reviewService.updateReview(dto, multipartFile, email);
+        Long updated_id = reviewService.updateReview(dto, email);
         String code = "";
         String message = "";
         if (updated_id < 0){
@@ -163,10 +213,12 @@ public class ReviewController {
         if (result < 0){
             code = "LIKE_FAILED";
             message = "failed to update review's like";
-        }else{
-
-            code = "LIKE_UPDATED";
-            message = "like [" + result + "] has bean changed";
+        }else if(result == 1){
+            code = "LIKED";
+            message = "TRUE";
+        }else if(result == 2){
+            code = "DISLIKED";
+            message = "FALSE";
         }
 
         CommonResponse response =  CommonResponse.builder()
