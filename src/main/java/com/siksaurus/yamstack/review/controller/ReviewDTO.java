@@ -46,10 +46,11 @@ public class ReviewDTO {
         }
 
         @Builder
-        public CreateReviewDTO(Yam yam, LocalDate visitTime,
+        public CreateReviewDTO(Yam yam, LocalDate visitTime, String imagePath,
                                String comment, boolean isShared, Company company, MealTime mealTime){
             this.yam = yam;
             this.visitTime = visitTime;
+            this.imagePath = imagePath;
             this.comment = comment;
             this.isShared = isShared;
             this.company = company;
@@ -90,11 +91,12 @@ public class ReviewDTO {
         }
 
         @Builder
-        public UpdateReviewDTO(Long id, LocalDate visitTime,
+        public UpdateReviewDTO(Long id, LocalDate visitTime, String imagePath,
                                String comment, boolean isShared, Company company, MealTime mealTime,
                                boolean isImageChanged){
             this.id = id;
             this.visitTime = visitTime;
+            this.imagePath = imagePath;
             this.comment = comment;
             this.isShared = isShared;
             this.company = company;
