@@ -10,15 +10,19 @@ import com.siksaurus.yamstack.restaurant.service.RestaurantVO;
 import com.siksaurus.yamstack.yam.domain.Yam;
 import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.logging.Logger;
+
 @RestController
 @RequestMapping("/api/v1/restaurant")
 @RequiredArgsConstructor
+@Slf4j
 public class RestaurantController {
 
     private final AccountService accountService;
@@ -64,8 +68,11 @@ public class RestaurantController {
     // mode: "near", "want", "recommend", "done" : "여기 가까워", "여기 갈래", "여기 강추", "여기 가봤어"
     @PostMapping("/list")
     public ResponseEntity<Page<RestaurantVO>> getRestaurantList(@RequestBody RestaurantDTO.selectRestaurantDTO dto, RestaurantPageRequest pageable) {
+        log.info("여기얌 요청 : "+ dto.getMode());
+        long start = System.currentTimeMillis();
         Page<RestaurantVO> restaurantVOS = restaurantService.getRestaurantVOList(dto.getMode(), dto.getX(), dto.getY(), pageable.of());
-
+        long end = System.currentTimeMillis();
+        log.info("여기얌 요청 완료, 걸린 시간: "+(end-start));
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(restaurantVOS);

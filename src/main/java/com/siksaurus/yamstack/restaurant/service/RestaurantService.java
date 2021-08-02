@@ -14,6 +14,7 @@ import com.siksaurus.yamstack.yam.domain.Yam;
 import com.siksaurus.yamstack.yam.domain.repository.YamRepository;
 import com.siksaurus.yamstack.yam.service.YamService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -213,6 +215,7 @@ public class RestaurantService {
 
         LocalDate from = LocalDate.now().minusDays(7);
         LocalDate to = LocalDate.now();
+        log.info(from.toString() + " ~ " +to.toString());
         List<Yam> yams = new ArrayList<>();
         switch (mode) {
             case "want":
@@ -225,14 +228,18 @@ public class RestaurantService {
                 yams = yamService.getYamListBetweenCompletTimeAndNotGood(from, to);
                 break;
         }
+        log.info("step1 yams size : "+yams.size());
         List<Long> restaurantIds = yams.stream().map(yam -> yam.getRestaurant().getId()).collect(Collectors.toList());
         Set<Long> idSet = new LinkedHashSet<>();
         //빈도순 정렬
+        log.info("step2 restaurantIds sort : ");
         restaurantIds.sort(Comparator.comparing(restaurantIds.stream().collect(Collectors.groupingBy(v -> v, Collectors.counting()))::get).reversed());
         restaurantIds.forEach(id -> idSet.add(id));
 
+        log.info("step3 getRestaurantVO ");
         idSet.forEach(id -> rst.add(this.getRestaurantVO(id, x, y)));
 
+        log.info("getRestaurantVOListByMode complete result size: " + rst.size());
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), rst.size());
         final Page<RestaurantVO> result = new PageImpl<>(rst.subList(start, end), pageable, rst.size());
