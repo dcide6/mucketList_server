@@ -284,6 +284,7 @@ class ReviewControllerTest extends ControllerTest {
     void createReview() throws Exception {
 
         //given
+        Long id = 1L;
         AccountRole role = AccountRole.USER;
 
         Date expiredDate = Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant());
@@ -329,7 +330,9 @@ class ReviewControllerTest extends ControllerTest {
                 .comment("맛집임 추천")
                 .company(Company.FRIEND)
                 .isShared(true)
+                .mealTime(MealTime.LUNCH)
                 .build();
+        dto.setId(id);
 //
 //
 //        MockMultipartFile reviewdata = new MockMultipartFile("reviewdata", "",
@@ -340,7 +343,7 @@ class ReviewControllerTest extends ControllerTest {
 
 
 
-        given(reviewService.createReview(dto, email)).willReturn(0l);
+        given(reviewService.createReview(dto, email)).willReturn(1l);
 
         //when
         ResultActions result = mockMvc.perform(post("/api/v1/review")

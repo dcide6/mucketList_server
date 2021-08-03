@@ -115,7 +115,7 @@ public class ReviewController {
 
     /* 얌 - 리뷰 등록*/
     @PostMapping("")
-    public ResponseEntity<CommonResponse> createReview(@RequestHeader(value = "x-auth-token") String token,
+    public ResponseEntity<ReviewCreateResponse> createReview(@RequestHeader(value = "x-auth-token") String token,
                                                        @RequestBody ReviewDTO.CreateReviewDTO dto) throws IOException {
         JwtAuthToken jwtAuthToken = jwtAuthTokenProvider.convertAuthToken(token);
         String email = (String) jwtAuthToken.getData().get("sub");
@@ -131,10 +131,11 @@ public class ReviewController {
             code = "REVIEW_UPDATED";
             message = "review [" + new_id + "] has bean created";
         }
-        CommonResponse response =  CommonResponse.builder()
+        ReviewCreateResponse response =  ReviewCreateResponse.builder()
                 .code(code)
                 .status(200)
                 .message(message)
+                .review_id(new_id)
                 .build();
 
         return ResponseEntity.ok()
